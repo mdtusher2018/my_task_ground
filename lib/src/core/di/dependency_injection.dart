@@ -1,0 +1,19 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:scube_task/src/config/router/app_router.dart';
+import 'package:scube_task/src/core/services/network/api_client.dart';
+import 'package:scube_task/src/core/services/network/api_service.dart';
+import 'package:scube_task/src/core/services/network/i_api_service.dart';
+import 'package:scube_task/src/core/services/snackbar/i_snackbar_service.dart';
+import 'package:scube_task/src/core/services/snackbar/snackbar_service.dart';
+import 'package:scube_task/src/core/services/storage/i_local_storage_service.dart';
+import 'package:scube_task/src/core/services/storage/local_storage_service.dart';
+import 'package:scube_task/src/core/utils/api_end_points.dart';
+import 'package:scube_task/src/features/authentication/data/repositories/auth_repository.dart';
+import 'package:scube_task/src/features/authentication/domain/usecase/signin_usecase.dart';
+import 'package:scube_task/src/features/authentication/domain/repositories/i_auth_repository.dart';
+
+part 'dependency_injection.g.dart';
+part 'parts/services.dart';
+part 'parts/repository.dart';
+part 'parts/usecase.dart';
