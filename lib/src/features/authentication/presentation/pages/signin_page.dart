@@ -18,6 +18,9 @@ class SigninPage extends ConsumerWidget {
   final passCtrl = TextEditingController(text: "hello123");
 
   void _onLogin(WidgetRef ref) {
+
+
+
     ref
         .read(loginNotifierProvider.notifier)
         .login(email: emailCtrl.text.trim(), password: passCtrl.text.trim());
@@ -53,38 +56,41 @@ class SigninPage extends ConsumerWidget {
           children: [
             SizedBox(
               height: MediaQuery.sizeOf(context).height * 0.4,
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 40),
-                    Container(
-                      height: 90,
-                      width: 90,
-                      decoration: const BoxDecoration(
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox(height: 40),
+                      Container(
+                        height: 90,
+                        width: 90,
+                        decoration: const BoxDecoration(
+                          color: AppColors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.memory,
+                          color: AppColors.primary,
+                          size: 45,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      const CommonText(
+                        "SCUBE",
+                        size: 28,
                         color: AppColors.white,
-                        shape: BoxShape.circle,
+                        isBold: true,
                       ),
-                      child: const Icon(
-                        Icons.memory,
-                        color: AppColors.primary,
-                        size: 45,
+                      const SizedBox(height: 6),
+                      const CommonText(
+                        "Control & Monitoring System",
+                        size: 18,
+                        color: AppColors.white,
                       ),
-                    ),
-                    const SizedBox(height: 16),
-                    const CommonText(
-                      "SCUBE",
-                      size: 28,
-                      color: AppColors.white,
-                      isBold: true,
-                    ),
-                    const SizedBox(height: 6),
-                    const CommonText(
-                      "Control & Monitoring System",
-                      size: 18,
-                      color: AppColors.white,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -113,19 +119,25 @@ class SigninPage extends ConsumerWidget {
                       const SizedBox(height: 24),
 
                       CommonTextField(
-                        controller: emailCtrl,
+                        emailCtrl,
                         hintText: "Username",
                         keyboardType: TextInputType.emailAddress,
-                        boarderColor: AppColors.gray,
+                        borderColor: AppColors.gray,
                       ),
                       const SizedBox(height: 16),
 
                       /// PASSWORD
                       CommonTextField(
-                        controller: passCtrl,
+                         passCtrl,
+                         isPasswordVisible: obscurePassword,
+                         issuffixIconVisible: true,
+                        changePasswordVisibility: () {
+                          obscurePasswordNotifier.state=!obscurePasswordNotifier.state;
+                        },
                         hintText: "Password",
                         keyboardType: TextInputType.visiblePassword,
-                        boarderColor: AppColors.gray,
+                        borderColor: AppColors.gray,
+                        
                       ),
 
                       const SizedBox(height: 10),
@@ -150,7 +162,10 @@ class SigninPage extends ConsumerWidget {
                         isLoading: signinState.isLoading,
                         onTap: signinState.isLoading
                             ? null
-                            : () => _onLogin(ref),
+                            : (){
+                              context.pushReplacement(AppRoutes.dashboard);
+                              _onLogin(ref);
+                            },
                         color: AppColors.primary,
                         textColor: AppColors.white,
                       ),
