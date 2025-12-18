@@ -109,13 +109,12 @@ class _RevenueViewSectionState extends State<RevenueViewSection> {
                           "Data & Cost Info",
                           size: 14,
                           isBold: true,
-                          
                         ),
                         children: const [
-                          DataCostItem(index: 1),
-                          DataCostItem(index: 2),
-                          DataCostItem(index: 3),
-                          DataCostItem(index: 4),
+                          _DataCostItem(index: 1),
+                          _DataCostItem(index: 2),
+                          _DataCostItem(index: 3),
+                          _DataCostItem(index: 4),
                         ],
                         onExpansionChanged: (expanded) {
                           setState(() {
@@ -135,10 +134,10 @@ class _RevenueViewSectionState extends State<RevenueViewSection> {
   }
 }
 
-class DataCostItem extends StatelessWidget {
+class _DataCostItem extends StatelessWidget {
   final int index;
 
-  const DataCostItem({super.key, required this.index});
+  const _DataCostItem({required this.index});
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +162,7 @@ class DataCostItem extends StatelessWidget {
               CommonText(
                 "Cost $index : ",
                 size: 12,
-                color:AppColors.textSecondary,
+                color: AppColors.textSecondary,
               ),
               CommonText("35689 ৳", size: 12, isBold: true),
             ],

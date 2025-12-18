@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scube_task/src/config/router/routes.dart';
+import 'package:scube_task/src/core/di/dependency_injection.dart';
 import 'package:scube_task/src/features/authentication/domain/entites/signin_entity.dart';
 import 'package:scube_task/src/features/authentication/presentation/notifiers/signin_notifier.dart';
 import 'package:scube_task/src/shared/themes/colors.dart';
@@ -18,9 +19,6 @@ class SigninPage extends ConsumerWidget {
   final passCtrl = TextEditingController(text: "hello123");
 
   void _onLogin(WidgetRef ref) {
-
-
-
     ref
         .read(loginNotifierProvider.notifier)
         .login(email: emailCtrl.text.trim(), password: passCtrl.text.trim());
@@ -42,6 +40,11 @@ class SigninPage extends ConsumerWidget {
           if (data != null) {
             context.go(AppRoutes.dashboard);
           }
+        },
+        error: (error, stackTrace) {
+          ref
+              .watch(snackBarServiceProvider)
+              .showError(error.toString(), context: context);
         },
       );
     });
@@ -128,16 +131,16 @@ class SigninPage extends ConsumerWidget {
 
                       /// PASSWORD
                       CommonTextField(
-                         passCtrl,
-                         isPasswordVisible: obscurePassword,
-                         issuffixIconVisible: true,
+                        passCtrl,
+                        isPasswordVisible: obscurePassword,
+                        issuffixIconVisible: true,
                         changePasswordVisibility: () {
-                          obscurePasswordNotifier.state=!obscurePasswordNotifier.state;
+                          obscurePasswordNotifier.state =
+                              !obscurePasswordNotifier.state;
                         },
                         hintText: "Password",
                         keyboardType: TextInputType.visiblePassword,
                         borderColor: AppColors.gray,
-                        
                       ),
 
                       const SizedBox(height: 10),
@@ -162,10 +165,9 @@ class SigninPage extends ConsumerWidget {
                         isLoading: signinState.isLoading,
                         onTap: signinState.isLoading
                             ? null
-                            : (){
-                              context.pushReplacement(AppRoutes.dashboard);
-                              _onLogin(ref);
-                            },
+                            : () {
+                                _onLogin(ref);
+                              },
                         color: AppColors.primary,
                         textColor: AppColors.white,
                       ),

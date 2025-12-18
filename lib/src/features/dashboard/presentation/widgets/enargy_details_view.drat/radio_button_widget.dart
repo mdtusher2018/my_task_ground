@@ -1,8 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:scube_task/src/shared/themes/colors.dart';
 import 'package:scube_task/src/shared/widgets/common_text.dart';
+
+//I'll change it to a class
 
 Widget commonRadioButon(String text, bool active) {
   return Row(

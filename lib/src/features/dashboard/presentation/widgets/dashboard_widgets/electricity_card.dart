@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scube_task/src/config/router/routes.dart';
-import 'package:scube_task/src/features/dashboard/data/electricity_data_card_model.dart';
+import 'package:scube_task/src/features/dashboard/data/model/electricity_data_card_model.dart';
 import 'package:scube_task/src/shared/themes/colors.dart';
 import 'package:scube_task/src/shared/widgets/common_image.dart';
 import 'package:scube_task/src/shared/widgets/common_text.dart';
@@ -44,10 +44,7 @@ class ElectricityCard extends StatelessWidget {
             height: 130.w,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.primary,
-                width: 14.w,
-              ),
+              border: Border.all(color: AppColors.primary, width: 14.w),
             ),
             child: Center(
               child: Column(
@@ -62,7 +59,7 @@ class ElectricityCard extends StatelessWidget {
 
           SizedBox(height: 12.h),
 
-          SourceLoadSwitch(
+          _SourceLoadSwitch(
             isSource: isSourceSelected,
             onChanged: onSwitchChanged,
           ),
@@ -75,7 +72,7 @@ class ElectricityCard extends StatelessWidget {
               itemCount: dataList.length,
               separatorBuilder: (_, __) => SizedBox(height: 8.h),
               itemBuilder: (_, index) {
-                return ElectricityDataCard(data: dataList[index]);
+                return _ElectricityDataCard(data: dataList[index]);
               },
             ),
           ),
@@ -84,15 +81,12 @@ class ElectricityCard extends StatelessWidget {
     );
   }
 }
-class SourceLoadSwitch extends StatelessWidget {
+
+class _SourceLoadSwitch extends StatelessWidget {
   final bool isSource;
   final ValueChanged<bool> onChanged;
 
-  const SourceLoadSwitch({
-    super.key,
-    required this.isSource,
-    required this.onChanged,
-  });
+  const _SourceLoadSwitch({required this.isSource, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -107,8 +101,7 @@ class SourceLoadSwitch extends StatelessWidget {
         children: [
           AnimatedAlign(
             duration: const Duration(milliseconds: 250),
-            alignment:
-                isSource ? Alignment.centerLeft : Alignment.centerRight,
+            alignment: isSource ? Alignment.centerLeft : Alignment.centerRight,
             child: Container(
               width: MediaQuery.of(context).size.width * .4,
               height: 44.h,
@@ -132,7 +125,7 @@ class SourceLoadSwitch extends StatelessWidget {
   Widget _switchItem(String text, bool active, VoidCallback onTap) {
     return Expanded(
       child: InkWell(
-            onTap: onTap,
+        onTap: onTap,
         child: FittedBox(
           fit: BoxFit.scaleDown,
           child: Center(
@@ -149,10 +142,10 @@ class SourceLoadSwitch extends StatelessWidget {
   }
 }
 
-class ElectricityDataCard extends StatelessWidget {
+class _ElectricityDataCard extends StatelessWidget {
   final ElectricityDataCardModel data;
 
-  const ElectricityDataCard({super.key, required this.data});
+  const _ElectricityDataCard({required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -176,7 +169,7 @@ class ElectricityDataCard extends StatelessWidget {
               isAsset: true,
             ),
             SizedBox(width: 8.w),
-      
+
             /// TEXT WRAP FIX
             Expanded(
               child: Column(
@@ -194,18 +187,15 @@ class ElectricityDataCard extends StatelessWidget {
                       ),
                       SizedBox(width: 6.w),
                       Flexible(
-                        child: CommonText(
-                          data.title,
-                          size: 14,
-                          maxline: 1,
-                        ),
+                        child: CommonText(data.title, size: 14, maxline: 1),
                       ),
-                      SizedBox(width: 8.w,),
+                      SizedBox(width: 8.w),
                       CommonText(
                         data.isActive ? "(Active)" : "(Inactive)",
                         size: 12,
-                        color:
-                            data.isActive ? AppColors.primary : AppColors.red,
+                        color: data.isActive
+                            ? AppColors.primary
+                            : AppColors.red,
                       ),
                     ],
                   ),
@@ -214,7 +204,7 @@ class ElectricityDataCard extends StatelessWidget {
                 ],
               ),
             ),
-      
+
             const Icon(Icons.chevron_right),
           ],
         ),

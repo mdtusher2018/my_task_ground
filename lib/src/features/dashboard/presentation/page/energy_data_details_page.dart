@@ -14,9 +14,6 @@ class DataViewPage extends StatefulWidget {
 }
 
 class _DataViewPageState extends State<DataViewPage> {
-
-
-
   bool showDataView = true; // true = DataView, false = RevenueView
 
   void toggleView(bool isDataView) {
@@ -25,10 +22,6 @@ class _DataViewPageState extends State<DataViewPage> {
     });
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,12 +29,8 @@ class _DataViewPageState extends State<DataViewPage> {
       appBar: CommonDashboardAppBar("SCM"),
       body: Stack(
         children: [
- showDataView
-                    ? const DataViewSection()
-                    : const RevenueViewSection(),
+          showDataView ? const DataViewSection() : const RevenueViewSection(),
 
-
-          
           Positioned(
             top: 10.h,
             left: 32.w,
@@ -56,7 +45,7 @@ class _DataViewPageState extends State<DataViewPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                 GestureDetector(
+                  GestureDetector(
                     onTap: () => toggleView(true),
                     child: commonRadioButon("Data View", showDataView),
                   ),
@@ -73,6 +62,3 @@ class _DataViewPageState extends State<DataViewPage> {
     );
   }
 }
-
-
-

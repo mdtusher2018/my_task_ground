@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:scube_task/src/features/dashboard/presentation/widgets/others/dashboard_appbar.dart';
@@ -19,20 +18,29 @@ class DashboardEmptyPage extends StatelessWidget {
         margin: EdgeInsets.all(16.r),
         decoration: BoxDecoration(
           color: AppColors.white,
-          borderRadius: BorderRadius.circular(25)
+          borderRadius: BorderRadius.circular(25),
         ),
-width: double.infinity,
-height: double.infinity,
-child: Center(child: Column(
-  spacing: 8.h,
-  mainAxisSize: MainAxisSize.min,
-  children: [
-    CommonImage(imagePath: "assest/image/empty_view.png",width: 200.w,height: 200.w,isAsset: true,),
-    
-    CommonText("No data is here,\nplease wait.",textAlign: TextAlign.center,)
-  ],
-),),
+        width: double.infinity,
+        height: double.infinity,
+        child: Center(
+          child: Column(
+            spacing: 8.h,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              CommonImage(
+                imagePath: "assest/image/empty_view.png",
+                width: 200.w,
+                height: 200.w,
+                isAsset: true,
+              ),
 
+              CommonText(
+                "No data is here,\nplease wait.",
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

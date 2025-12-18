@@ -1,20 +1,20 @@
-
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:scube_task/src/core/di/dependency_injection.dart';
 import 'package:scube_task/src/shared/themes/colors.dart';
 import 'package:scube_task/src/shared/widgets/common_text.dart';
 
-class DateRangeSearchRow extends StatefulWidget {
+class DateRangeSearchRow extends ConsumerStatefulWidget {
   final Function(DateTimeRange) onSearch;
 
   const DateRangeSearchRow({super.key, required this.onSearch});
 
   @override
-  State<DateRangeSearchRow> createState() => _DateRangeSearchRowState();
+  ConsumerState<DateRangeSearchRow> createState() => _DateRangeSearchRowState();
 }
 
-class _DateRangeSearchRowState extends State<DateRangeSearchRow> {
+class _DateRangeSearchRowState extends ConsumerState<DateRangeSearchRow> {
   DateTime? fromDate;
   DateTime? toDate;
 
@@ -73,19 +73,20 @@ class _DateRangeSearchRowState extends State<DateRangeSearchRow> {
                             ? "${fromDate!.day}-${fromDate!.month}-${fromDate!.year}"
                             : "From Date",
                         size: 14,
-                        color: fromDate != null ? AppColors.black : AppColors.gray,
+                        color: fromDate != null
+                            ? AppColors.black
+                            : AppColors.gray,
                       ),
                     ),
-                       Icon(Icons.calendar_today, size: 20, color: AppColors.gray),
-                   
+                    Icon(Icons.calendar_today, size: 20, color: AppColors.gray),
                   ],
                 ),
               ),
             ),
           ),
-      
+
           SizedBox(width: 10.w),
-      
+
           /// To Date
           Expanded(
             child: GestureDetector(
@@ -99,16 +100,15 @@ class _DateRangeSearchRowState extends State<DateRangeSearchRow> {
                 ),
                 child: Row(
                   children: [
-                    
-                    
                     Expanded(
                       child: CommonText(
                         toDate != null
                             ? "${toDate!.day}-${toDate!.month}-${toDate!.year}"
                             : "To",
                         size: 14,
-                        color: toDate != null ? AppColors.black : AppColors.gray,
-                      
+                        color: toDate != null
+                            ? AppColors.black
+                            : AppColors.gray,
                       ),
                     ),
                     Icon(Icons.calendar_today, size: 20, color: AppColors.gray),
@@ -117,28 +117,30 @@ class _DateRangeSearchRowState extends State<DateRangeSearchRow> {
               ),
             ),
           ),
-      
+
           SizedBox(width: 10.w),
-      
+
           /// Search button
-          Container(
-            padding: EdgeInsets.all(8.w),
-            decoration: BoxDecoration(
-              
-              color: AppColors.mainBG,
-              borderRadius: BorderRadius.circular(12.r),
-      border: Border.all(color: AppColors.primary)
-            ),
-            child: GestureDetector(
-              onTap: () {
-                if (fromDate != null && toDate != null) {
-                  widget.onSearch(DateTimeRange(start: fromDate!, end: toDate!));
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Please select both From and To dates")),
-                  );
-                }
-              },
+          GestureDetector(
+            onTap: () {
+              if (fromDate != null && toDate != null) {
+                widget.onSearch(DateTimeRange(start: fromDate!, end: toDate!));
+              } else {
+                ref
+                    .watch(snackBarServiceProvider)
+                    .showError(
+                      "Please select both From and To dates",
+                      context: context,
+                    );
+              }
+            },
+            child: Container(
+              padding: EdgeInsets.all(8.w),
+              decoration: BoxDecoration(
+                color: AppColors.mainBG,
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(color: AppColors.primary),
+              ),
               child: Icon(Icons.search, color: AppColors.primary),
             ),
           ),

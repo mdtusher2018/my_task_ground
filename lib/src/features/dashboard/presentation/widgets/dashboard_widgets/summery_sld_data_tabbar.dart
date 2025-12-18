@@ -3,12 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:scube_task/src/shared/themes/colors.dart';
 import 'package:scube_task/src/shared/widgets/common_text.dart';
 
-
-class TopTabs extends StatelessWidget {
+class SummerySLDDataTabbar extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onTabChanged;
 
-  const TopTabs({
+  const SummerySLDDataTabbar({
     super.key,
     required this.selectedIndex,
     required this.onTabChanged,

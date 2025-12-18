@@ -1,13 +1,8 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:scube_task/src/features/dashboard/data/energy_model.dart';
+import 'package:scube_task/src/features/dashboard/data/model/energy_model.dart';
 import 'package:scube_task/src/shared/themes/colors.dart';
 import 'package:scube_task/src/shared/widgets/common_text.dart';
-
-
 
 class EnergyChartCard extends StatelessWidget {
   final String totalPower;
@@ -43,17 +38,17 @@ class EnergyChartCard extends StatelessWidget {
           SizedBox(height: 12.h),
 
           /// Data rows
-          ...items.map((e) => EnergyDataRow(item: e)),
+          ...items.map((e) => _EnergyDataRow(item: e)),
         ],
       ),
     );
   }
 }
 
-class EnergyDataRow extends StatelessWidget {
+class _EnergyDataRow extends StatelessWidget {
   final EnergyDataItem item;
 
-  const EnergyDataRow({super.key, required this.item});
+  const _EnergyDataRow({required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -118,4 +113,3 @@ class EnergyDataRow extends StatelessWidget {
     );
   }
 }
-
