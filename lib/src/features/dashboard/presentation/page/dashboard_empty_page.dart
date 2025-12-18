@@ -27,6 +27,7 @@ class DashboardEmptyPage extends StatelessWidget {
             spacing: 8.h,
             mainAxisSize: MainAxisSize.min,
             children: [
+              Spacer(),
               CommonImage(
                 imagePath: "assest/image/empty_view.png",
                 width: 200.w,
@@ -38,6 +39,7 @@ class DashboardEmptyPage extends StatelessWidget {
                 "No data is here,\nplease wait.",
                 textAlign: TextAlign.center,
               ),
+              Spacer(flex: 3),
             ],
           ),
         ),
