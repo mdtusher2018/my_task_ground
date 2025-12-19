@@ -7,15 +7,8 @@ import 'package:scube_task/src/features/dashboard/presentation/widgets/dashboard
 import 'package:scube_task/src/features/dashboard/presentation/widgets/others/dashboard_appbar.dart';
 import 'package:scube_task/src/shared/themes/colors.dart';
 
-class DashboardPage extends StatefulWidget {
-  const DashboardPage({super.key});
-
-  @override
-  State<DashboardPage> createState() => _DashboardPageState();
-}
-
-class _DashboardPageState extends State<DashboardPage> {
-  bool isSourceSelected = true;
+class DashboardPage extends StatelessWidget {
+  DashboardPage({super.key});
 
   final List<ElectricityDataCardModel> dommyData = [
     ElectricityDataCardModel(
@@ -59,7 +52,12 @@ class _DashboardPageState extends State<DashboardPage> {
       image: "assest/image/transformar.png",
     ),
   ];
-  int selectedTabIndex = 0;
+
+  final ValueNotifier<int> selectedTabIndexNotifier = ValueNotifier<int>(0);
+
+  final ValueNotifier<bool> isSourceSelectedNotifier = ValueNotifier<bool>(
+    true,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -69,21 +67,29 @@ class _DashboardPageState extends State<DashboardPage> {
       body: ListView(
         padding: EdgeInsets.all(12.w),
         children: [
-          SummerySLDDataTabbar(
-            selectedIndex: selectedTabIndex,
-            onTabChanged: (index) {
-              setState(() {
-                selectedTabIndex = index;
-              });
+          ValueListenableBuilder(
+            valueListenable: selectedTabIndexNotifier,
+            builder: (context, selectedTabIndex, child) {
+              return SummerySLDDataTabbar(
+                selectedIndex: selectedTabIndex,
+                onTabChanged: (index) {
+                  selectedTabIndexNotifier.value = index;
+                },
+              );
             },
           ),
           Divider(color: AppColors.gray, height: 1, thickness: 1),
-          ElectricityCard(
-            isSourceSelected: isSourceSelected,
-            onSwitchChanged: (value) {
-              setState(() => isSourceSelected = value);
+          ValueListenableBuilder(
+            valueListenable: isSourceSelectedNotifier,
+            builder: (context, isSourceSelected, child) {
+              return ElectricityCard(
+                isSourceSelected: isSourceSelected,
+                onSwitchChanged: (value) {
+                  isSourceSelectedNotifier.value = value;
+                },
+                dataList: dommyData,
+              );
             },
-            dataList: dommyData,
           ),
           SizedBox(height: 14.h),
           const DashboardBottomMenu(),

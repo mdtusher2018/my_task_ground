@@ -4,18 +4,12 @@ import 'package:scube_task/src/features/dashboard/presentation/widgets/enargy_de
 import 'package:scube_task/src/shared/themes/colors.dart';
 import 'package:scube_task/src/shared/widgets/common_text.dart';
 
-class RevenueViewSection extends StatefulWidget {
+class RevenueViewSection extends StatelessWidget {
   const RevenueViewSection({super.key});
 
   @override
-  State<RevenueViewSection> createState() => _RevenueViewSectionState();
-}
-
-class _RevenueViewSectionState extends State<RevenueViewSection> {
-  bool isExpanded = false;
-
-  @override
   Widget build(BuildContext context) {
+    final isExpanded = ValueNotifier<bool>(false);
     return Container(
       margin: EdgeInsets.only(top: 30),
       width: double.infinity,
@@ -86,20 +80,25 @@ class _RevenueViewSectionState extends State<RevenueViewSection> {
                           vertical: 8.h,
                         ),
                         leading: Icon(Icons.bar_chart, color: AppColors.gray),
-                        trailing: AnimatedRotation(
-                          turns: isExpanded ? 0.5 : 0,
-                          duration: const Duration(milliseconds: 200),
-                          child: Container(
-                            padding: EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: AppColors.primary,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.keyboard_double_arrow_down_rounded,
-                              color: AppColors.white,
-                            ),
-                          ),
+                        trailing: ValueListenableBuilder(
+                          valueListenable: isExpanded,
+                          builder: (context, isExpanded, _) {
+                            return AnimatedRotation(
+                              turns: isExpanded ? 0.5 : 0,
+                              duration: const Duration(milliseconds: 200),
+                              child: Container(
+                                padding: EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  Icons.keyboard_double_arrow_down_rounded,
+                                  color: AppColors.white,
+                                ),
+                              ),
+                            );
+                          },
                         ),
                         title: CommonText(
                           "Data & Cost Info",
@@ -113,9 +112,7 @@ class _RevenueViewSectionState extends State<RevenueViewSection> {
                           _DataCostItem(index: 4),
                         ],
                         onExpansionChanged: (expanded) {
-                          setState(() {
-                            isExpanded = expanded;
-                          });
+                          isExpanded.value = expanded;
                         },
                       ),
                     ),

@@ -225,17 +225,14 @@ class _DataViewSectionState extends State<DataViewSection> {
                   if (showTodayData)
                     EnergyChartCard(totalPower: "5.53 kw", items: sampleData)
                   else
-                    ListView.separated(
-                      separatorBuilder: (context, index) {
-                        return SizedBox(height: 8.h);
-                      },
+                    ListView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       itemCount: customDataList.length,
                       itemBuilder: (context, index) {
                         final items = customDataList[index];
                         return Padding(
-                          padding: EdgeInsets.only(bottom: 12.h),
+                          padding: EdgeInsets.only(bottom: 20.h),
                           child: EnergyChartCard(
                             totalPower: "5.53 kw",
                             items: items,
