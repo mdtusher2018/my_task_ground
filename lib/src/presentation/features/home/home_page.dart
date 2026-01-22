@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:scube_task/src/shared/themes/colors.dart';
-import 'package:scube_task/src/shared/widgets/common_text.dart';
+import 'package:scube_task/src/core/di/injection.dart';
+import 'package:scube_task/src/core/utils/image_utils.dart';
+import 'package:scube_task/src/domain/entites/home_entity.dart';
+import 'package:scube_task/src/presentation/features/home/bloc/home_bloc.dart';
+import 'package:scube_task/src/presentation/features/home/bloc/home_event.dart';
+import 'package:scube_task/src/presentation/features/home/bloc/home_state.dart';
+import 'package:scube_task/src/presentation/shared/themes/colors.dart';
+import 'package:scube_task/src/presentation/shared/widgets/common_image.dart';
+import 'package:scube_task/src/presentation/shared/widgets/common_text.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class HomePage extends StatelessWidget {
@@ -9,22 +17,40 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+    return BlocProvider(
+      create: (_) => getIt<HomeBloc>()..add(FetchHomeData()),
+      child: Scaffold(
+        backgroundColor: Colors.grey.shade100,
 
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 12.h),
-              const _SearchBar(),
-              SizedBox(height: 20.h),
-              const _CategorySection(),
-              SizedBox(height: 20.h),
-              const _NewArrivalHeader(),
-              SizedBox(height: 12.h),
-              _ProductGrid(),
-            ],
+        body: SafeArea(
+          child: BlocBuilder<HomeBloc, HomeState>(
+            builder: (context, state) {
+              if (state is HomeInitial) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (state is HomeLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (state is HomeError) return Center(child: Text(state.message));
+              if (state is HomeLoaded) {
+                 final homeData = state.home;
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 12.h),
+                      const _SearchBar(),
+                      SizedBox(height: 20.h),
+                      _CategorySection(homeData.categories),
+                      SizedBox(height: 20.h),
+                      const _NewArrivalHeader(),
+                      SizedBox(height: 12.h),
+                      _ProductGrid(homeData.newArrivals),
+                    ],
+                  ),
+                );
+              }
+                   return const SizedBox();
+            },
           ),
         ),
       ),
@@ -56,16 +82,12 @@ class _SearchBar extends StatelessWidget {
 }
 
 class _CategorySection extends StatelessWidget {
-  const _CategorySection();
+  final List<CategoryEntity> categories;
+  const _CategorySection(this.categories);
 
   @override
   Widget build(BuildContext context) {
-    final categories = [
-      ("Mobile", Icons.phone_android),
-      ("Gaming", Icons.sports_esports),
-      ("Images", Icons.camera_alt),
-      ("Vehicles", Icons.directions_car),
-    ];
+
 
     return Container(
       color: Colors.white,
@@ -82,14 +104,14 @@ class _CategorySection extends StatelessWidget {
           ),
           SizedBox(height: 12.h),
           SizedBox(
-            height: 100,
+            height: 100.h,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: categories.length,
               itemBuilder: (context, index) {
                 return _CategoryItem(
-                  title: categories[index].$1,
-                  icon: categories[index].$2,
+                  title: categories[index].title,
+                  icon: categories[index].icon,
                 );
               },
             ),
@@ -102,7 +124,7 @@ class _CategorySection extends StatelessWidget {
 
 class _CategoryItem extends StatelessWidget {
   final String title;
-  final IconData icon;
+  final String icon;
 
   const _CategoryItem({required this.title, required this.icon});
 
@@ -119,10 +141,15 @@ class _CategoryItem extends StatelessWidget {
               color: const Color(0xffFFF4DC),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, size: 26.sp),
+            child: CommonImage( imagePath: icon,  fit: BoxFit.contain,),
           ),
           SizedBox(height: 6.h),
-          CommonText(title, size: 12, color: AppColors.gray),
+          SizedBox(
+           
+            height: 30.h,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: CommonText(title, size: 12, color: AppColors.gray))),
         ],
       ),
     );
@@ -147,7 +174,8 @@ class _NewArrivalHeader extends StatelessWidget {
 }
 
 class _ProductGrid extends StatelessWidget {
-  const _ProductGrid();
+  final List<ProductEntity> products;
+  const _ProductGrid(this.products);
 
   @override
   Widget build(BuildContext context) {
@@ -163,15 +191,16 @@ class _ProductGrid extends StatelessWidget {
           crossAxisSpacing: 12.w,
           childAspectRatio: 0.65,
         ),
-        itemCount: 6,
-        itemBuilder: (_, index) => const _ProductCard(),
+        itemCount: products.length,
+        itemBuilder: (_, index) =>  _ProductCard(products[index]),
       ),
     );
   }
 }
 
 class _ProductCard extends StatelessWidget {
-  const _ProductCard();
+  final ProductEntity product;
+  const _ProductCard(this.product);
 
   @override
   Widget build(BuildContext context) {
@@ -187,12 +216,12 @@ class _ProductCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Center(child: Icon(Icons.headphones, size: 80.sp)),
+                child: Center(child: CommonImage(imagePath: getFullImagePath(product.image),fit: BoxFit.cover, )),
               ),
               SizedBox(height: 6.h),
 
               RatingBarIndicator(
-                rating: 3.5,
+                rating: product.rating,
                 itemBuilder: (context, index) =>
                     const Icon(Icons.star, color: Colors.orange),
                 itemCount: 5,
@@ -201,23 +230,24 @@ class _ProductCard extends StatelessWidget {
               ),
 
               SizedBox(height: 6.h),
-              const CommonText(
-                "Samsung Galaxy 3 in 512GB",
+               CommonText(
+                product.name,
                 size: 13,
                 isBold: true,
                 maxline: 2,
+                
               ),
               SizedBox(height: 4.h),
               Row(
                 children: [
-                  const CommonText(
-                    "\$69",
+                   CommonText(
+                    "\$${product.price}",
                     size: 16,
                     color: AppColors.red,
                     isBold: true,
                   ),
                   SizedBox(width: 6.w),
-                  CommonText("\$87", color: Colors.grey, haveLineThrow: true),
+                 if(product.oldPrice!=null) CommonText("\$${product.oldPrice}", color: Colors.grey, haveLineThrow: true),
                 ],
               ),
             ],

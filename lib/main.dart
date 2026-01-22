@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:scube_task/src/config/router/app_router.dart';
 import 'package:scube_task/src/core/di/injection.dart';
+import 'package:scube_task/src/core/router/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  setupDI();
+  await setupDI();
   runApp(MyApp());
 }
 

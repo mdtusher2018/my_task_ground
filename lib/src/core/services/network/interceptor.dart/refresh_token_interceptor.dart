@@ -4,7 +4,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scube_task/src/config/router/routes.dart';
+import 'package:scube_task/src/core/router/routes.dart';
 import 'package:scube_task/src/core/utils/logger.dart';
 
 import 'package:scube_task/src/core/services/storage/i_local_storage_service.dart';

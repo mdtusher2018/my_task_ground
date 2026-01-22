@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:scube_task/src/shared/themes/colors.dart';
-import 'package:scube_task/src/shared/widgets/common_text.dart';
+import 'package:scube_task/src/presentation/shared/themes/colors.dart';
+import 'package:scube_task/src/presentation/shared/widgets/common_text.dart';
 
 class CommonButton extends StatelessWidget {
   final String title;

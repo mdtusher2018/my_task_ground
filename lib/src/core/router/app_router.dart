@@ -1,5 +1,5 @@
 import 'package:go_router/go_router.dart';
-import 'package:scube_task/src/features/home/presentation/pages/home_page.dart';
+import 'package:scube_task/src/presentation/features/home/home_page.dart';
 import 'routes.dart';
 
 class AppRouter {
