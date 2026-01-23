@@ -261,8 +261,8 @@ _RelatedProduct _$RelatedProductFromJson(Map<String, dynamic> json) =>
       bundle_product_offer: json['bundle_product_offer'] as String?,
       created_at: json['created_at'] as String?,
       updated_at: json['updated_at'] as String?,
-      averageRating: json['averageRating'] as String?,
-      totalSold: (json['totalSold'] as num?)?.toInt(),
+      averageRating: json['averageRating'],
+      totalSold: json['totalSold'],
       active_variants: (json['active_variants'] as List<dynamic>?)
           ?.map((e) => ActiveVariant.fromJson(e as Map<String, dynamic>))
           .toList(),

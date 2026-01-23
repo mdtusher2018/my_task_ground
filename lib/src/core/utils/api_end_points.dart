@@ -7,5 +7,5 @@ class ApiEndpoints {
   static String home = "/";
   static String product = "/product";
   static String productDetails(String slug) => "/product/$slug";
-  static String productById(int id) => "/product-by-category/$id";
+  static String productById(String id) => "/product-by-category/$id";
 }

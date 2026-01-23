@@ -29,7 +29,8 @@ class ProductDetailsBloc
         ),
       );
     }
+    final product=(result as Success).data as ProductDetailsEntity;
 
-    emit(ProductDetailsLoaded((result as Success).data as ProductDetailsEntity));
+    emit(ProductDetailsLoaded(product:product , selectedImage:product.image ));
   }
 }

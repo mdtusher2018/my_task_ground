@@ -7,9 +7,9 @@ import 'package:scube_task/src/core/router/routes.dart';
 import 'package:scube_task/src/core/utils/image_utils.dart';
 import 'package:scube_task/src/domain/entites/common_entity/category_entity.dart';
 import 'package:scube_task/src/domain/entites/common_entity/product_entity.dart';
-import 'package:scube_task/src/presentation/features/home/bloc/home_bloc.dart';
-import 'package:scube_task/src/presentation/features/home/bloc/home_event.dart';
-import 'package:scube_task/src/presentation/features/home/bloc/home_state.dart';
+import 'package:scube_task/src/presentation/Views/home/bloc/home_bloc.dart';
+import 'package:scube_task/src/presentation/Views/home/bloc/home_event.dart';
+import 'package:scube_task/src/presentation/Views/home/bloc/home_state.dart';
 import 'package:scube_task/src/presentation/shared/themes/colors.dart';
 import 'package:scube_task/src/presentation/shared/widgets/common_image.dart';
 import 'package:scube_task/src/presentation/shared/widgets/common_text.dart';
@@ -141,7 +141,7 @@ class _CategoryItem extends StatelessWidget {
       padding: const EdgeInsets.only(right: 20.0),
       child: InkWell(
         onTap: () {
-          context.push(AppRoutes.produceByCategory, extra: {'id': id});
+          context.push(AppRoutes.produceByCategory, extra: {'id': id.toString()});
         },
         child: Column(
           children: [

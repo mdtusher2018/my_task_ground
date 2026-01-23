@@ -4,10 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:scube_task/src/core/utils/logger.dart';
 import 'package:scube_task/src/core/services/network/error/api_exception.dart';
-import 'package:scube_task/src/core/services/network/interceptor.dart/auth_interceptor.dart';
 import 'package:scube_task/src/core/services/network/interceptor.dart/logger_interceptor.dart';
-import 'package:scube_task/src/core/services/network/interceptor.dart/refresh_token_interceptor.dart';
-import 'package:scube_task/src/core/services/network/interceptor.dart/retry_interceptor.dart';
 import 'package:scube_task/src/core/services/storage/i_local_storage_service.dart';
 
 class ApiClient {
@@ -20,23 +17,20 @@ class ApiClient {
     required String baseUrl,
     required this.localStorage,
     required this.navigatorKey,
-    Duration connectTimeout = const Duration(seconds: 5),
-    Duration receiveTimeout = const Duration(seconds: 3),
   }) : dio =
            dio ??
            Dio(
              BaseOptions(
                baseUrl: baseUrl,
-               connectTimeout: connectTimeout,
-               receiveTimeout: receiveTimeout,
+
                headers: {HttpHeaders.contentTypeHeader: 'application/json'},
              ),
            ) {
     // add interceptors
     this.dio.interceptors.addAll([
-      AuthInterceptor(localStorage),
-      RefreshTokenInterceptor(this.dio, localStorage, navigatorKey),
-      RetryOnConnectionChangeInterceptor(dio: this.dio),
+      // AuthInterceptor(localStorage),
+      // RefreshTokenInterceptor(this.dio, localStorage, navigatorKey),
+      // RetryOnConnectionChangeInterceptor(dio: this.dio),
       LoggingInterceptor(),
     ]);
   }

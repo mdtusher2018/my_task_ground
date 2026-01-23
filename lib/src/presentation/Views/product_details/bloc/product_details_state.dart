@@ -14,12 +14,23 @@ class ProductDetailsLoading extends ProductDetailsState {}
 
 class ProductDetailsLoaded extends ProductDetailsState {
   final ProductDetailsEntity product;
+  final String selectedImage;
 
-  const ProductDetailsLoaded(this.product);
+  const ProductDetailsLoaded({
+    required this.product,
+    required this.selectedImage,
+  });
 
-  @override
-  List<Object?> get props => [product];
+  ProductDetailsLoaded copyWith({
+    String? selectedImage,
+  }) {
+    return ProductDetailsLoaded(
+      product: product,
+      selectedImage: selectedImage ?? this.selectedImage,
+    );
+  }
 }
+
 
 class ProductDetailsError extends ProductDetailsState {
   final String message;

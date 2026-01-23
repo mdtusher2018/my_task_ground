@@ -1,6 +1,7 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scube_task/src/domain/entites/product_details_entity.dart';
-
 part 'product_details_response.freezed.dart';
 part 'product_details_response.g.dart';
 
@@ -181,8 +182,9 @@ abstract class RelatedProduct with _$RelatedProduct {
     String? bundle_product_offer,
     String? created_at,
     String? updated_at,
-    String? averageRating,
-    int? totalSold,
+   
+    dynamic averageRating,
+    dynamic totalSold,
     List<ActiveVariant>? active_variants,
   }) = _RelatedProduct;
 

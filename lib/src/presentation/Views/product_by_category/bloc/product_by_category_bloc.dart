@@ -4,7 +4,7 @@ import 'package:scube_task/src/core/base/failure.dart';
 import 'package:scube_task/src/domain/entites/product_by_category_entity.dart';
 import 'package:scube_task/src/domain/usecase/product_usecase.dart';
 
-import 'package:scube_task/src/presentation/features/product_by_category/bloc/product_by_category_state.dart';
+import 'package:scube_task/src/presentation/Views/product_by_category/bloc/product_by_category_state.dart';
 
 import 'product_by_category_event.dart';
 

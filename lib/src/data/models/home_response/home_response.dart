@@ -1,8 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:scube_task/src/data/models/product_model.dart';
+import 'package:scube_task/src/data/models/product_model/product_model.dart';
 import 'package:scube_task/src/domain/entites/home_entity.dart';
 
-import '../category_model.dart';
+import '../category_model/category_model.dart';
 part 'home_response.freezed.dart';
 part 'home_response.g.dart';
 

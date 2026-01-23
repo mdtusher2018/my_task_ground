@@ -3,13 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:scube_task/src/core/di/injection.dart';
-import 'package:scube_task/src/presentation/features/product_details/bloc/product_details_bloc.dart';
-import 'package:scube_task/src/presentation/features/product_details/bloc/product_details_event.dart';
-import 'package:scube_task/src/presentation/features/product_details/bloc/product_details_state.dart';
+import 'package:scube_task/src/core/utils/image_utils.dart';
+import 'package:scube_task/src/presentation/Views/product_details/bloc/product_details_bloc.dart';
+import 'package:scube_task/src/presentation/Views/product_details/bloc/product_details_event.dart';
+import 'package:scube_task/src/presentation/Views/product_details/bloc/product_details_state.dart';
 import 'package:scube_task/src/presentation/shared/themes/colors.dart';
 import 'package:scube_task/src/presentation/shared/widgets/common_button.dart';
 import 'package:scube_task/src/presentation/shared/widgets/common_text.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 class ProductDetailsPage extends StatelessWidget {
   final String slug;
@@ -62,31 +64,35 @@ class ProductDetailsPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(height: 20.h),
-                            const _PriceSection(),
+                            _PriceSection(
+                              price: state.product.price,
+                              offerPrice: state.product.offerPrice,
+                            ),
                             SizedBox(height: 8.h),
 
                             CommonText(
-                              "MOBILE PHONES",
+                             state.product.categoryName,
                               color: AppColors.textSecondary,
                             ),
                             SizedBox(height: 8.h),
                             CommonText(
-                              "Samsung Galaxy Z Fold3 5G\n3 colors in 512GB",
+
+state.product.name,
                               size: 16,
                               isBold: true,
                             ),
                             SizedBox(height: 10.h),
-                            const _RatingRow(),
+                             _RatingRow(rating: state.product.rating,totalReviews: state.product.totalReviews,),
                             SizedBox(height: 12.h),
-                            const CommonText(
-                              "It is a long established fact that a reader will be distracted by the readable.",
+                            CommonText(
+                              state.product.shortDescription,
                               size: 12,
                               color: AppColors.textSecondary,
                             ),
                             SizedBox(height: 16.h),
-                            const _Introduction(),
+                            _Introduction(state.product.longDescription),
                             SizedBox(height: 16.h),
-                            const _Features(),
+                             _Features(state.product.features),
                             SizedBox(height: 16.h),
                           ],
                         ),
@@ -143,23 +149,28 @@ class _ProductImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SizedBox(
-        height: 220.h,
+    return BlocBuilder<ProductDetailsBloc, ProductDetailsState>(
+      builder: (context, state) {
+        if (state is! ProductDetailsLoaded) return SizedBox.shrink();
+        return Center(
+          child: SizedBox(
+            height: 220.h,
 
-        child: ClipRRect(
-          child: PhotoView(
-            backgroundDecoration: const BoxDecoration(
-              color: Colors.transparent,
+            child: ClipRRect(
+              child: PhotoView(
+                backgroundDecoration: const BoxDecoration(
+                  color: Colors.transparent,
+                ),
+                imageProvider: NetworkImage(
+                  getFullImagePath(state.selectedImage),
+                ),
+                minScale: PhotoViewComputedScale.contained,
+                maxScale: PhotoViewComputedScale.covered * 3,
+              ),
             ),
-            imageProvider: const NetworkImage(
-              "https://cdn.mos.cms.futurecdn.net/VFkJaCNyiKEig9zRQjVF26.jpg",
-            ),
-            minScale: PhotoViewComputedScale.contained,
-            maxScale: PhotoViewComputedScale.covered * 3,
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -193,60 +204,71 @@ class _ImagePreviewRow extends StatelessWidget {
 }
 
 class _PriceSection extends StatelessWidget {
-  const _PriceSection();
+  final double price;
+  final double? offerPrice;
+
+  const _PriceSection({required this.price, required this.offerPrice});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const CommonText("\$6.99", size: 22, isBold: true, color: Colors.red),
-        SizedBox(width: 8.w),
-        const CommonText(
-          "\$9.99",
-          size: 14,
-          color: Colors.grey,
-          haveLineThrow: true,
+        CommonText(
+          "\$${offerPrice ?? price}",
+          size: 22,
+          isBold: true,
+          color: Colors.red,
         ),
+        if (offerPrice != null) ...[
+          SizedBox(width: 8.w),
+          CommonText(
+            "\$$price",
+            size: 14,
+            color: AppColors.gray,
+            haveLineThrow: true,
+          ),
+        ],
       ],
     );
   }
 }
 
 class _RatingRow extends StatelessWidget {
-  const _RatingRow();
+  const _RatingRow({required this.totalReviews,required this.rating});
+  final int totalReviews;
+  final double rating;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         RatingBarIndicator(
-          rating: 6,
+          rating: rating,
           itemCount: 6,
           itemBuilder: (_, __) => const Icon(Icons.star, color: Colors.orange),
           itemSize: 16.sp,
         ),
         SizedBox(width: 8.w),
-        const CommonText("6 Reviews", size: 12),
+         CommonText("$totalReviews Reviews", size: 12),
       ],
     );
   }
 }
 
 class _Introduction extends StatelessWidget {
-  const _Introduction();
+  final String introduction;
+  const _Introduction(this.introduction);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
-        CommonText("Introduction", size: 14, isBold: true),
+      children: [
+        const CommonText("Introduction", size: 14, isBold: true),
         SizedBox(height: 6),
-        CommonText(
-          "Lorem Ipsum is simply dummy text of the printing and typesetting industry...",
-          size: 12,
-          color: AppColors.textSecondary,
-          maxline: 5,
+        Html(
+         data:  introduction,
+         
         ),
       ],
     );
@@ -254,16 +276,11 @@ class _Introduction extends StatelessWidget {
 }
 
 class _Features extends StatelessWidget {
-  const _Features();
-
+  const _Features(this.features);
+  final List<String> features ;
   @override
   Widget build(BuildContext context) {
-    final features = [
-      "Slim body with metal cover",
-      "Latest Intel Core i5-1135G7 processor",
-      "8GB DDR4 RAM and fast 512GB PCIe SSD",
-      "NVIDIA GeForce MX350 2GB GDDR5 graphics, NVIDIA GeForce MX350 2GB GDDR5 graphics,NVIDIA GeForce MX350 2GB GDDR5 graphics",
-    ];
+  
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

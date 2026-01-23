@@ -6,9 +6,9 @@ import 'package:scube_task/src/core/di/injection.dart';
 import 'package:scube_task/src/core/router/routes.dart';
 import 'package:scube_task/src/core/utils/image_utils.dart';
 import 'package:scube_task/src/domain/entites/common_entity/product_entity.dart';
-import 'package:scube_task/src/presentation/features/product_by_category/bloc/product_by_category_bloc.dart';
-import 'package:scube_task/src/presentation/features/product_by_category/bloc/product_by_category_event.dart';
-import 'package:scube_task/src/presentation/features/product_by_category/bloc/product_by_category_state.dart';
+import 'package:scube_task/src/presentation/Views/product_by_category/bloc/product_by_category_bloc.dart';
+import 'package:scube_task/src/presentation/Views/product_by_category/bloc/product_by_category_event.dart';
+import 'package:scube_task/src/presentation/Views/product_by_category/bloc/product_by_category_state.dart';
 import 'package:scube_task/src/presentation/shared/themes/colors.dart';
 import 'package:scube_task/src/presentation/shared/widgets/common_image.dart';
 import 'package:scube_task/src/presentation/shared/widgets/common_text.dart';
@@ -25,7 +25,7 @@ class ProductByCategoryPage extends StatelessWidget {
           getIt<ProductByCategoryBloc>()..add(FetchProductByCategoryData(id)),
       child: Scaffold(
         backgroundColor: Colors.grey.shade100,
-
+        appBar: _ProductAppBar(),
         body: SafeArea(
           child: BlocBuilder<ProductByCategoryBloc, ProductByCategoryState>(
             builder: (context, state) {
@@ -184,4 +184,32 @@ class _ProductCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _ProductAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const _ProductAppBar();
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      backgroundColor: AppColors.primary.withOpacity(0.15),
+      elevation: 0,
+      surfaceTintColor: Colors.transparent,
+ 
+      leading: Padding(
+        padding: EdgeInsets.only(left: 12.w),
+        child: CircleAvatar(
+          backgroundColor: Colors.orange,
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.white),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ),
+      ),
+      title: const CommonText("All Products", size: 16),
+    );
+  }
+
+  @override
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + 10.h);
 }

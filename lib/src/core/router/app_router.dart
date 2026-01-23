@@ -1,7 +1,7 @@
 import 'package:go_router/go_router.dart';
-import 'package:scube_task/src/presentation/features/home/home_page.dart';
-import 'package:scube_task/src/presentation/features/product_by_category/product_by_category_page.dart';
-import 'package:scube_task/src/presentation/features/product_details/product_details.dart';
+import 'package:scube_task/src/presentation/Views/home/home_page.dart';
+import 'package:scube_task/src/presentation/Views/product_by_category/product_by_category_page.dart';
+import 'package:scube_task/src/presentation/Views/product_details/product_details.dart';
 import 'routes.dart';
 
 class AppRouter {
