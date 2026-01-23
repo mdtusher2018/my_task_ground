@@ -23,7 +23,6 @@ abstract class ProductByCategoryResponse with _$ProductByCategoryResponse {
 extension ProductByCategoryResponseMapper on ProductByCategoryResponse {
   ProductByCategoryEntity toEntity() {
     return ProductByCategoryEntity(
-      category: category.toEntity(),
       products: products.map((product) => product.toEntity()).toList(),
     );
   }
