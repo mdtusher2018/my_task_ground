@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:scube_task/src/data/models/category_model.dart';
 import 'package:scube_task/src/data/models/product_model.dart';
+import 'package:scube_task/src/domain/entites/product_by_category_entity.dart';
 
 part 'product_by_category_response.freezed.dart';
 part 'product_by_category_response.g.dart';
@@ -14,4 +15,16 @@ abstract class ProductByCategoryResponse with _$ProductByCategoryResponse {
 
   factory ProductByCategoryResponse.fromJson(Map<String, dynamic> json) =>
       _$ProductByCategoryResponseFromJson(json);
+}
+
+/// --------------------
+/// ProductByCategoryResponse → ProductByCategoryEntity
+/// --------------------
+extension ProductByCategoryResponseMapper on ProductByCategoryResponse {
+  ProductByCategoryEntity toEntity() {
+    return ProductByCategoryEntity(
+      category: category.toEntity(),
+      products: products.map((product) => product.toEntity()).toList(),
+    );
+  }
 }

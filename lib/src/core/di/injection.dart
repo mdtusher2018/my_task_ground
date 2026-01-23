@@ -15,7 +15,8 @@ import 'package:scube_task/src/domain/repositories/i_product_repository.dart';
 import 'package:scube_task/src/domain/usecase/home_usecase.dart';
 import 'package:scube_task/src/domain/usecase/product_usecase.dart';
 import 'package:scube_task/src/presentation/features/home/bloc/home_bloc.dart';
-import 'package:scube_task/src/presentation/features/product/bloc/product_details_bloc.dart';
+import 'package:scube_task/src/presentation/features/product_by_category/bloc/product_by_category_bloc.dart';
+import 'package:scube_task/src/presentation/features/product_details/bloc/product_details_bloc.dart';
 
 final getIt = GetIt.instance;
 
@@ -51,6 +52,7 @@ Future<void> setupDI() async {
 
   getIt.registerFactory<HomeBloc>(() => HomeBloc(getIt<HomeUseCase>()));
 
+  //Product Details
   getIt.registerLazySingleton<IProductRepository>(
     () => ProductRepository(getIt<IApiService>()),
   );
@@ -61,5 +63,9 @@ Future<void> setupDI() async {
 
   getIt.registerFactory<ProductDetailsBloc>(
     () => ProductDetailsBloc(useCase: getIt<ProductUseCase>()),
+  );
+
+  getIt.registerFactory<ProductByCategoryBloc>(
+    () => ProductByCategoryBloc(getIt<ProductUseCase>()),
   );
 }

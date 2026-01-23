@@ -1,13 +1,7 @@
-
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:scube_task/src/domain/entites/common_entity/product_entity.dart';
 part 'product_model.freezed.dart';
 part 'product_model.g.dart';
-
-
-
-
-
-
 
 @freezed
 abstract class Product with _$Product {
@@ -76,4 +70,22 @@ abstract class VariantItem with _$VariantItem {
 
   factory VariantItem.fromJson(Map<String, dynamic> json) =>
       _$VariantItemFromJson(json);
+}
+
+/// --------------------
+/// Product → ProductEntity
+/// --------------------
+extension ProductMapper on Product {
+  ProductEntity toEntity() {
+    return ProductEntity(
+      id: id,
+      slug: slug,
+      name: name,
+      image: thumb_image,
+      rating: double.tryParse(averageRating) ?? 0,
+      price: offer_price ?? price,
+      oldPrice: offer_price != null ? price : null,
+      isFavorite: false, // later from wishlist API
+    );
+  }
 }
