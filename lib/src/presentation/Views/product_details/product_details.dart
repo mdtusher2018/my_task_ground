@@ -7,9 +7,9 @@ import 'package:scube_task/src/core/utils/image_utils.dart';
 import 'package:scube_task/src/presentation/Views/product_details/bloc/product_details_bloc.dart';
 import 'package:scube_task/src/presentation/Views/product_details/bloc/product_details_event.dart';
 import 'package:scube_task/src/presentation/Views/product_details/bloc/product_details_state.dart';
-import 'package:scube_task/src/presentation/shared/themes/colors.dart';
-import 'package:scube_task/src/presentation/shared/widgets/common_button.dart';
-import 'package:scube_task/src/presentation/shared/widgets/common_text.dart';
+import 'package:scube_task/src/core/themes/colors.dart';
+import 'package:scube_task/src/presentation/shared/components/common_button.dart';
+import 'package:scube_task/src/presentation/shared/components/common_text.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:flutter_html/flutter_html.dart';
 
@@ -38,6 +38,7 @@ class ProductDetailsPage extends StatelessWidget {
             }
 
             if (state is ProductDetailsLoaded) {
+        
               return SafeArea(
                 child: SingleChildScrollView(
                   child: Column(
@@ -51,10 +52,71 @@ class ProductDetailsPage extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: AppColors.primary.withOpacity(0.15),
                             ),
-                            child: Column(children: [const _ProductImage()]),
+                            child: Center(
+                              child: SizedBox(
+                                height: 220.h,
+
+                                child: ClipRRect(
+                                  child: PhotoView(
+                                    backgroundDecoration: const BoxDecoration(
+                                      color: Colors.transparent,
+                                    ),
+                                    imageProvider: NetworkImage(
+                                      getFullImagePath(state.selectedImage),
+                                    ),
+                                    minScale: PhotoViewComputedScale.contained,
+                                    maxScale:
+                                        PhotoViewComputedScale.covered * 3,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                           SizedBox(height: 12.h),
-                          const _ImagePreviewRow(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: List.generate(
+                              state.product.gallery?.length ?? 0,
+                              (index) {
+                                final image = state.product.gallery?[index];
+                                if(image==null)return SizedBox.shrink();
+                                final isSelected =
+                                    image.image == state.selectedImage;
+
+                                return GestureDetector(
+                                  onTap: () {
+                                    context.read<ProductDetailsBloc>().add(
+                                      SelectProductImage(image.image ?? ""),
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.symmetric(
+                                      horizontal: 6.w,
+                                    ),
+                                    height: 50.r,
+                                    width: 48.r,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      border: Border.all(
+                                        color: isSelected
+                                            ? AppColors.primary
+                                            : AppColors.gray,
+                                        width: isSelected ? 2 : 0,
+                                      ),
+                                      borderRadius: BorderRadius.circular(6.r),
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(4.r),
+                                      child: Image.network(
+                                        getFullImagePath(image.image ?? ""),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                         ],
                       ),
 
@@ -71,18 +133,20 @@ class ProductDetailsPage extends StatelessWidget {
                             SizedBox(height: 8.h),
 
                             CommonText(
-                             state.product.categoryName,
+                              state.product.categoryName,
                               color: AppColors.textSecondary,
                             ),
                             SizedBox(height: 8.h),
                             CommonText(
-
-state.product.name,
+                              state.product.name,
                               size: 16,
                               isBold: true,
                             ),
                             SizedBox(height: 10.h),
-                             _RatingRow(rating: state.product.rating,totalReviews: state.product.totalReviews,),
+                            _RatingRow(
+                              rating: state.product.rating,
+                              totalReviews: state.product.totalReviews,
+                            ),
                             SizedBox(height: 12.h),
                             CommonText(
                               state.product.shortDescription,
@@ -92,7 +156,7 @@ state.product.name,
                             SizedBox(height: 16.h),
                             _Introduction(state.product.longDescription),
                             SizedBox(height: 16.h),
-                             _Features(state.product.features),
+                            _Features(state.product.features),
                             SizedBox(height: 16.h),
                           ],
                         ),
@@ -144,65 +208,6 @@ class _ProductAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(kToolbarHeight + 10.h);
 }
 
-class _ProductImage extends StatelessWidget {
-  const _ProductImage();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<ProductDetailsBloc, ProductDetailsState>(
-      builder: (context, state) {
-        if (state is! ProductDetailsLoaded) return SizedBox.shrink();
-        return Center(
-          child: SizedBox(
-            height: 220.h,
-
-            child: ClipRRect(
-              child: PhotoView(
-                backgroundDecoration: const BoxDecoration(
-                  color: Colors.transparent,
-                ),
-                imageProvider: NetworkImage(
-                  getFullImagePath(state.selectedImage),
-                ),
-                minScale: PhotoViewComputedScale.contained,
-                maxScale: PhotoViewComputedScale.covered * 3,
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _ImagePreviewRow extends StatelessWidget {
-  const _ImagePreviewRow();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        4,
-        (index) => Container(
-          margin: EdgeInsets.symmetric(horizontal: 6.w),
-          height: 50.r,
-          width: 48.r,
-          decoration: BoxDecoration(
-            color: Colors.white,
-
-            border: Border.all(
-              color: AppColors.gray.withOpacity(0.5),
-              width: 1,
-            ),
-          ),
-          child: const Icon(Icons.phone_android),
-        ),
-      ),
-    );
-  }
-}
-
 class _PriceSection extends StatelessWidget {
   final double price;
   final double? offerPrice;
@@ -234,7 +239,7 @@ class _PriceSection extends StatelessWidget {
 }
 
 class _RatingRow extends StatelessWidget {
-  const _RatingRow({required this.totalReviews,required this.rating});
+  const _RatingRow({required this.totalReviews, required this.rating});
   final int totalReviews;
   final double rating;
 
@@ -249,7 +254,7 @@ class _RatingRow extends StatelessWidget {
           itemSize: 16.sp,
         ),
         SizedBox(width: 8.w),
-         CommonText("$totalReviews Reviews", size: 12),
+        CommonText("$totalReviews Reviews", size: 12),
       ],
     );
   }
@@ -266,10 +271,7 @@ class _Introduction extends StatelessWidget {
       children: [
         const CommonText("Introduction", size: 14, isBold: true),
         SizedBox(height: 6),
-        Html(
-         data:  introduction,
-         
-        ),
+        Html(data: introduction),
       ],
     );
   }
@@ -277,11 +279,9 @@ class _Introduction extends StatelessWidget {
 
 class _Features extends StatelessWidget {
   const _Features(this.features);
-  final List<String> features ;
+  final List<String> features;
   @override
   Widget build(BuildContext context) {
-  
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

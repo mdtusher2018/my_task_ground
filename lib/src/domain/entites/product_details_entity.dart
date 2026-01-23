@@ -1,9 +1,11 @@
+import 'package:scube_task/src/data/models/product_details_response/product_details_response.dart';
+
 class ProductDetailsEntity {
   final int id;
   final String name;
   final String categoryName;
   final String image;
-  final List<String> gallery;
+  final List<GalleryItem>? gallery;
   final double price;
   final double? offerPrice;
   final double rating;

@@ -12,7 +12,15 @@ class ProductDetailsBloc
 
   ProductDetailsBloc({required this.useCase}) : super(ProductDetailsInitial()) {
     on<LoadProductDetails>(_onLoadProduct);
+    on<SelectProductImage>((event, emit) {
+  final current = state;
+  if (current is ProductDetailsLoaded) {
+    emit(current.copyWith(selectedImage: event.image));
   }
+});
+
+  }
+  
 
   Future<void> _onLoadProduct(
     LoadProductDetails event,

@@ -4,16 +4,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scube_task/src/core/di/injection.dart';
 import 'package:scube_task/src/core/router/routes.dart';
-import 'package:scube_task/src/core/utils/image_utils.dart';
 import 'package:scube_task/src/domain/entites/common_entity/category_entity.dart';
 import 'package:scube_task/src/domain/entites/common_entity/product_entity.dart';
 import 'package:scube_task/src/presentation/Views/home/bloc/home_bloc.dart';
 import 'package:scube_task/src/presentation/Views/home/bloc/home_event.dart';
 import 'package:scube_task/src/presentation/Views/home/bloc/home_state.dart';
-import 'package:scube_task/src/presentation/shared/themes/colors.dart';
-import 'package:scube_task/src/presentation/shared/widgets/common_image.dart';
-import 'package:scube_task/src/presentation/shared/widgets/common_text.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:scube_task/src/core/themes/colors.dart';
+import 'package:scube_task/src/presentation/shared/components/common_image.dart';
+import 'package:scube_task/src/presentation/shared/components/common_text.dart';
+import 'package:scube_task/src/presentation/shared/widgets/product_card.dart';
+import 'package:scube_task/src/presentation/shared/widgets/search_bar.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -41,7 +41,7 @@ class HomePage extends StatelessWidget {
                   child: Column(
                     children: [
                       SizedBox(height: 12.h),
-                      const _SearchBar(),
+                      const CommonSearchBar(),
                       SizedBox(height: 20.h),
                       _CategorySection(homeData.categories),
                       SizedBox(height: 20.h),
@@ -61,28 +61,6 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class _SearchBar extends StatelessWidget {
-  const _SearchBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 48.h,
-      padding: EdgeInsets.symmetric(horizontal: 12.w),
-      margin: EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(color: Colors.white),
-      child: Row(
-        children: [
-          const Icon(Icons.search, color: Colors.grey),
-          SizedBox(width: 8.w),
-          const Expanded(
-            child: CommonText("Search products", color: Colors.grey),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class _CategorySection extends StatelessWidget {
   final List<CategoryEntity> categories;
@@ -206,84 +184,7 @@ class _ProductGrid extends StatelessWidget {
           childAspectRatio: 0.65,
         ),
         itemCount: products.length,
-        itemBuilder: (_, index) => _ProductCard(products[index]),
-      ),
-    );
-  }
-}
-
-class _ProductCard extends StatelessWidget {
-  final ProductEntity product;
-  const _ProductCard(this.product);
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        context.push(AppRoutes.produceDetails, extra: {'slug': product.slug});
-      },
-      child: Container(
-        padding: EdgeInsets.all(10.r),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12.r),
-        ),
-        child: Stack(
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Center(
-                    child: CommonImage(
-                      imagePath: getFullImagePath(product.image),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 6.h),
-
-                RatingBarIndicator(
-                  rating: product.rating,
-                  itemBuilder: (context, index) =>
-                      const Icon(Icons.star, color: Colors.orange),
-                  itemCount: 5,
-                  itemSize: 18.sp,
-                  direction: Axis.horizontal,
-                ),
-
-                SizedBox(height: 6.h),
-                CommonText(product.name, size: 13, isBold: true, maxline: 2),
-                SizedBox(height: 4.h),
-                Row(
-                  children: [
-                    CommonText(
-                      "\$${product.price}",
-                      size: 16,
-                      color: AppColors.red,
-                      isBold: true,
-                    ),
-                    SizedBox(width: 6.w),
-                    if (product.oldPrice != null)
-                      CommonText(
-                        "\$${product.oldPrice}",
-                        color: Colors.grey,
-                        haveLineThrow: true,
-                      ),
-                  ],
-                ),
-              ],
-            ),
-            Align(
-              alignment: Alignment.topRight,
-              child: Icon(
-                Icons.favorite,
-                size: 18.sp,
-                color: AppColors.gray.withOpacity(0.5),
-              ),
-            ),
-          ],
-        ),
+        itemBuilder: (_, index) => ProductCard(products[index]),
       ),
     );
   }

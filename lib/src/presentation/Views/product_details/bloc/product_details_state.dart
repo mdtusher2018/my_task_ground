@@ -21,14 +21,13 @@ class ProductDetailsLoaded extends ProductDetailsState {
     required this.selectedImage,
   });
 
-  ProductDetailsLoaded copyWith({
-    String? selectedImage,
-  }) {
-    return ProductDetailsLoaded(
-      product: product,
-      selectedImage: selectedImage ?? this.selectedImage,
-    );
-  }
+ProductDetailsLoaded copyWith({String? selectedImage}) {
+  return ProductDetailsLoaded(
+    product: product,
+    selectedImage: selectedImage ?? this.selectedImage,
+  );
+}
+
 }
 
 
