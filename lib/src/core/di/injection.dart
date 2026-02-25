@@ -1,4 +1,6 @@
-import 'package:get_it/get_it.dart';
+
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scube_task/src/core/router/app_router.dart';
 import 'package:scube_task/src/core/services/network/api_client.dart';
 import 'package:scube_task/src/core/services/network/api_service.dart';
@@ -8,68 +10,54 @@ import 'package:scube_task/src/core/services/snackbar/snackbar_service.dart';
 import 'package:scube_task/src/core/services/storage/i_local_storage_service.dart';
 import 'package:scube_task/src/core/services/storage/local_storage_service.dart';
 import 'package:scube_task/src/core/utils/api_end_points.dart';
-import 'package:scube_task/src/data/repositories/home_repository.dart';
 import 'package:scube_task/src/data/repositories/product_repository.dart';
-import 'package:scube_task/src/domain/repositories/i_home_repository.dart';
-import 'package:scube_task/src/domain/repositories/i_product_repository.dart';
-import 'package:scube_task/src/domain/usecase/home_usecase.dart';
 import 'package:scube_task/src/domain/usecase/product_usecase.dart';
-import 'package:scube_task/src/presentation/Views/all_products/bloc/all_products_bloc.dart';
-import 'package:scube_task/src/presentation/Views/home/bloc/home_bloc.dart';
-import 'package:scube_task/src/presentation/Views/product_by_category/bloc/product_by_category_bloc.dart';
-import 'package:scube_task/src/presentation/Views/product_details/bloc/product_details_bloc.dart';
 
-final getIt = GetIt.instance;
 
-Future<void> setupDI() async {
-  getIt.registerLazySingleton<ILocalStorageService>(
-    () => LocalStorageService(),
+
+/// LocalStorageService Provider
+final localStorageProvider = Provider<ILocalStorageService>((ref) {
+  return LocalStorageService();
+});
+
+/// ApiClient Provider
+final apiClientProvider = Provider<ApiClient>((ref) {
+  final localService = ref.watch(localStorageProvider);
+  final navigatorKey =
+      ref.watch(appRouterProvider).routerDelegate.navigatorKey;
+
+  return ApiClient(
+    baseUrl: ApiEndpoints.baseUrl,
+    localStorage: localService,
+    navigatorKey: navigatorKey,
   );
+});
 
-  getIt.registerLazySingleton<AppRouter>(() => AppRouter());
+/// ApiService Provider
+final apiServiceProvider = Provider<IApiService>((ref) {
+  final client = ref.watch(apiClientProvider);
 
-  getIt.registerLazySingleton<ApiClient>(
-    () => ApiClient(
-      baseUrl: ApiEndpoints.baseUrl,
-      localStorage: getIt<ILocalStorageService>(),
-      navigatorKey: getIt<AppRouter>().router.routerDelegate.navigatorKey,
-    ),
+  return ApiService(
+    client,
+    baseUrl: ApiEndpoints.baseUrl,
   );
+});
 
-  getIt.registerLazySingleton<IApiService>(
-    () => ApiService(getIt<ApiClient>(), baseUrl: ApiEndpoints.baseUrl),
-  );
+/// SnackBarService Provider
+final snackBarServiceProvider = Provider<ISnackBarService>((ref) {
+  return SnackBarService();
+});
 
-  getIt.registerLazySingleton<ISnackBarService>(() => SnackBarService());
 
-  // Home
-  getIt.registerLazySingleton<IHomeRepository>(
-    () => HomeRepository(getIt<IApiService>(), getIt<ILocalStorageService>()),
-  );
 
-  getIt.registerLazySingleton<HomeUseCase>(
-    () => HomeUseCase(repository: getIt<IHomeRepository>()),
-  );
 
-  getIt.registerFactory<HomeBloc>(() => HomeBloc(getIt<HomeUseCase>()));
+final productRepositoryProvider = Provider<ProductRepository>((ref) {
+  final apiService = ref.read(apiServiceProvider);
+  return ProductRepository(apiService);
+});
 
-  //Product Details
-  getIt.registerLazySingleton<IProductRepository>(
-    () => ProductRepository(getIt<IApiService>()),
-  );
 
-  getIt.registerLazySingleton<ProductUseCase>(
-    () => ProductUseCase(repository: getIt<IProductRepository>()),
-  );
-
-  getIt.registerFactory<ProductDetailsBloc>(
-    () => ProductDetailsBloc(useCase: getIt<ProductUseCase>()),
-  );
-
-  getIt.registerFactory<ProductByCategoryBloc>(
-    () => ProductByCategoryBloc(getIt<ProductUseCase>()),
-  );
-  getIt.registerFactory<AllProductsBloc>(
-    () => AllProductsBloc(getIt<ProductUseCase>()),
-  );
-}
+final productUseCaseProvider = Provider<ProductUseCase>((ref) {
+  final repository = ref.read(productRepositoryProvider);
+  return ProductUseCase(repository: repository);
+});

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scube_task/src/core/themes/colors.dart';
-import 'package:scube_task/src/presentation/Views/home/home_page.dart';
+import 'package:scube_task/src/presentation/Views/all_products/all_products_page.dart';
+
 import 'package:scube_task/src/presentation/shared/components/common_text.dart';
 
 class RootPage extends StatefulWidget {

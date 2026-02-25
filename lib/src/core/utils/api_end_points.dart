@@ -1,11 +1,8 @@
 class ApiEndpoints {
-  static const String baseUrl = 'https://mamunuiux.com/flutter_task/api';
-  static const String baseImageUrl = 'https://mamunuiux.com/flutter_task/';
+  static const String baseUrl = 'https://fakestoreapi.com/';
 
   static String refreshToken = "auth/refresh-token";
 
-  static String home = "/";
-  static String product(int page) => "/product?page=$page";
-  static String productDetails(String slug) => "/product/$slug";
-  static String productById(String id) => "/product-by-category/$id";
+  static String product(int page) => "products?page=$page";
+
 }

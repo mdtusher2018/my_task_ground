@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:scube_task/src/core/di/injection.dart';
 import 'package:scube_task/src/core/router/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await setupDI();
-  runApp(MyApp());
+
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.watch(appRouterProvider);
+
     return ScreenUtilInit(
       designSize: const Size(375, 812),
       minTextAdapt: true,
@@ -22,10 +28,11 @@ class MyApp extends StatelessWidget {
         return MaterialApp.router(
           title: 'Scube Task App',
           debugShowCheckedModeBanner: false,
-
-          theme: ThemeData(primaryColor: Colors.blue, useMaterial3: true),
-
-          routerConfig: getIt<AppRouter>().router,
+          theme: ThemeData(
+            primaryColor: Colors.blue,
+            useMaterial3: true,
+          ),
+          routerConfig: router,
         );
       },
     );

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:scube_task/src/core/utils/image_utils.dart';
 import 'package:scube_task/src/core/themes/colors.dart';
 import 'package:scube_task/src/presentation/shared/components/common_text.dart';
 
@@ -52,7 +51,7 @@ class CommonImage extends StatelessWidget {
       );
     } else {
       imageWidget = Image.network(
-        getFullImagePath(imagePath),
+        imagePath,
         width: width?.w,
         height: height?.h,
         fit: fit,

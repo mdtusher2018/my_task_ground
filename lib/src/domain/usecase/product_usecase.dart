@@ -2,12 +2,8 @@
 
 import 'package:scube_task/src/core/base/failure.dart';
 import 'package:scube_task/src/core/base/result.dart';
-import 'package:scube_task/src/data/models/all_products/all_products_response.dart';
-import 'package:scube_task/src/data/models/product_by_category_response/product_by_category_response.dart';
-import 'package:scube_task/src/data/models/product_details_response/product_details_response.dart';
-import 'package:scube_task/src/domain/entites/all_product_entity.dart';
-import 'package:scube_task/src/domain/entites/product_by_category_entity.dart';
-import 'package:scube_task/src/domain/entites/product_details_entity.dart';
+import 'package:scube_task/src/data/models/all_products_response.dart';
+import 'package:scube_task/src/domain/entites/product_entity.dart';
 import 'package:scube_task/src/domain/repositories/i_product_repository.dart';
 
 class ProductUseCase {
@@ -15,34 +11,8 @@ class ProductUseCase {
 
   ProductUseCase({required this.repository});
 
-  Future<Result<ProductDetailsEntity, Failure>> getHomeData({
-    required String slug,
-  }) async {
-    final result = await repository.getProductDetails(slug: slug);
 
-    if (result is FailureResult) {
-      return FailureResult((result as FailureResult).error);
-    }
-
-    return Success(
-      ((result as Success).data as ProductDetailsResponse).toEntity(),
-    );
-  }
-
-  Future<Result<ProductByCategoryEntity, Failure>> getProductsByCategory({
-    required String id,
-  }) async {
-    final result = await repository.getProductsByCategory(id: id);
-
-    if (result is FailureResult) {
-      return FailureResult((result as FailureResult).error);
-    }
-
-    return Success(
-      ((result as Success).data as ProductByCategoryResponse).toEntity(),
-    );
-  }
-Future<Result<AllProductsEntity, Failure>> getAllProducts({
+Future<Result<List<ProductEntity>, Failure>> getAllProducts({
   required int page,
 }) async {
   final result = await repository.getALLProducts(page: page);
@@ -50,9 +20,9 @@ Future<Result<AllProductsEntity, Failure>> getAllProducts({
   if (result is FailureResult) {
     return FailureResult((result as FailureResult).error);
   }
-
+ final productsList=((result as Success).data as List<Product>);
   return Success(
-    ((result as Success).data as AllProductsResponse).toEntity(),
+   productsList.map((e) => e.toEntity(),).toList(),
   );
 }
 
