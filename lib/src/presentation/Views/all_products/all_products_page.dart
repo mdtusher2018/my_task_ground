@@ -11,7 +11,8 @@ class HomePage extends ConsumerStatefulWidget {
   ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMixin {
+class _HomePageState extends ConsumerState<HomePage>
+    with TickerProviderStateMixin {
   late TabController _tabController;
   final ScrollController _scrollController = ScrollController();
 
@@ -19,7 +20,10 @@ class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMix
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) return;
+      //here i'll update 
+    });
     // Lazy loading when scrolling near bottom
     _scrollController.addListener(() {
       final state = ref.read(allProductsProvider);
@@ -31,61 +35,64 @@ class _HomePageState extends ConsumerState<HomePage> with TickerProviderStateMix
       }
     });
   }
-@override
-Widget build(BuildContext context) {
-  return DefaultTabController(
-    length: 3,
-    child: Scaffold(
-      body: RefreshIndicator(
-        onRefresh: () =>
-            ref.read(allProductsProvider.notifier).refreshProducts(currentTab: _tabController.index),
-        child: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return [
-              SliverAppBar(
-     pinned: true,
-                backgroundColor: AppColors.primary,
-                title: const Text("Scroll task"),centerTitle: true,
-              ),
 
-              SliverAppBar(
-                backgroundColor: AppColors.primary,
-                toolbarHeight: 160,
-                flexibleSpace: const FlexibleSpaceBar(
-                  background: _BannerOnly(),
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        body: RefreshIndicator(
+          onRefresh: () => ref
+              .read(allProductsProvider.notifier)
+              .refreshProducts(currentTab: _tabController.index),
+          child: NestedScrollView(
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  pinned: true,
+                  backgroundColor: AppColors.primary,
+                  title: const Text("Scroll task"),
+                  centerTitle: true,
                 ),
-              ),
 
-         SliverOverlapAbsorber(
-    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-    sliver: SliverAppBar(
-      pinned: true,
-toolbarHeight: 0,
-    
-      bottom:  TabBar(
-        controller: _tabController,
-        tabs: [
-          Tab(text: "All"),
-          Tab(text: "Electronics"),
-          Tab(text: "Jewelery"),
-        ],
-      ),
-    ),
-  ),
-            ];
-          },
-          body: const TabBarView(
-            children: [
-              ProductsTab(),
-              ProductsTab(),
-              ProductsTab(),
-            ],
+                SliverAppBar(
+                  backgroundColor: AppColors.primary,
+                  toolbarHeight: 160,
+            
+                  flexibleSpace: const FlexibleSpaceBar(
+                    background: _BannerOnly(),
+                  ),
+                ),
+
+                SliverOverlapAbsorber(
+                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                    context,
+                  ),
+                  sliver: SliverAppBar(
+                    pinned: true,
+                    toolbarHeight: 0,
+
+                    bottom: TabBar(
+                      controller: _tabController,
+
+                      tabs: [
+                        Tab(text: "All"),
+                        Tab(text: "Electronics"),
+                        Tab(text: "Jewelery"),
+                      ],
+                    ),
+                  ),
+                ),
+              ];
+            },
+            body: const TabBarView(
+              children: [ProductsTab(), ProductsTab(), ProductsTab()],
+            ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 }
 
 class ProductsTab extends ConsumerWidget {
@@ -101,23 +108,20 @@ class ProductsTab extends ConsumerWidget {
           key: PageStorageKey('products'),
           slivers: [
             SliverOverlapInjector(
-              handle:
-                  NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
             ),
 
             SliverPadding(
               padding: const EdgeInsets.all(16),
               sliver: SliverGrid(
-                gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   childAspectRatio: 0.65,
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 12,
                 ),
                 delegate: SliverChildBuilderDelegate(
-                  (context, index) =>
-                      ProductCard(state.products[index]),
+                  (context, index) => ProductCard(state.products[index]),
                   childCount: state.products.length,
                 ),
               ),
@@ -127,9 +131,7 @@ class ProductsTab extends ConsumerWidget {
               const SliverToBoxAdapter(
                 child: Padding(
                   padding: EdgeInsets.all(16),
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                  child: Center(child: CircularProgressIndicator()),
                 ),
               ),
           ],
@@ -139,9 +141,6 @@ class ProductsTab extends ConsumerWidget {
   }
 }
 
-
-
-
 class _BannerOnly extends StatelessWidget {
   const _BannerOnly();
   @override
@@ -149,9 +148,7 @@ class _BannerOnly extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: AppColors.black,
-      ),
+      decoration: BoxDecoration(color: AppColors.black),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,10 +164,7 @@ class _BannerOnly extends StatelessWidget {
           SizedBox(height: 12),
           Text(
             "Search from thousands of amazing items at the best prices.",
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.white70,
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.white70),
           ),
         ],
       ),
