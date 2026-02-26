@@ -11,7 +11,11 @@ import 'package:scube_task/src/core/services/storage/i_local_storage_service.dar
 import 'package:scube_task/src/core/services/storage/local_storage_service.dart';
 import 'package:scube_task/src/core/utils/api_end_points.dart';
 import 'package:scube_task/src/data/repositories/product_repository.dart';
+import 'package:scube_task/src/domain/repositories/i_product_repository.dart';
 import 'package:scube_task/src/domain/usecase/product_usecase.dart';
+import 'package:scube_task/src/data/repositories/profile_repository.dart';
+import 'package:scube_task/src/domain/repositories/i_profile_repositoty.dart';
+import 'package:scube_task/src/domain/usecase/profile_usecase.dart';
 
 
 
@@ -51,7 +55,7 @@ final snackBarServiceProvider = Provider<ISnackBarService>((ref) {
 
 
 
-final productRepositoryProvider = Provider<ProductRepository>((ref) {
+final productRepositoryProvider = Provider<IProductRepository>((ref) {
   final apiService = ref.read(apiServiceProvider);
   return ProductRepository(apiService);
 });
@@ -60,4 +64,14 @@ final productRepositoryProvider = Provider<ProductRepository>((ref) {
 final productUseCaseProvider = Provider<ProductUseCase>((ref) {
   final repository = ref.read(productRepositoryProvider);
   return ProductUseCase(repository: repository);
+});
+final profileRepositoryProvider = Provider<IProfileRepository>((ref) {
+  final apiService = ref.read(apiServiceProvider);
+  return ProfileRepository(apiService);
+});
+
+
+final profileUseCaseProvider = Provider<ProfileUsecase>((ref) {
+  final repository = ref.read(profileRepositoryProvider);
+  return ProfileUsecase(repository: repository);
 });

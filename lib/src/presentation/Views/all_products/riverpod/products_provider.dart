@@ -2,6 +2,7 @@ import 'package:scube_task/src/core/base/failure.dart';
 import 'package:scube_task/src/core/base/result.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scube_task/src/core/di/injection.dart';
+import 'package:scube_task/src/core/utils/logger.dart';
 import 'package:scube_task/src/domain/entites/product_entity.dart';
 import 'package:scube_task/src/domain/usecase/product_usecase.dart';
 
@@ -35,8 +36,9 @@ class AllProductsState {
 
 final allProductsProvider =
     StateNotifierProvider<AllProductsNotifier, AllProductsState>(
-  (ref) => AllProductsNotifier(ref.read(productUseCaseProvider)),
-);
+      (ref) => AllProductsNotifier(ref.read(productUseCaseProvider)),
+    );
+
 class AllProductsNotifier extends StateNotifier<AllProductsState> {
   final ProductUseCase usecase;
 
@@ -52,20 +54,14 @@ class AllProductsNotifier extends StateNotifier<AllProductsState> {
 
     _isFetching = true;
 
-    state = state.copyWith(
-      isLoading: true,
-      error: null,
-    );
+    state = state.copyWith(isLoading: true, error: null);
 
     final result = await usecase.getAllProducts(page: _page);
 
     if (result is FailureResult) {
-        final error = (result as FailureResult).error as Failure;
+      final error = (result as FailureResult).error as Failure;
 
-      state = state.copyWith(
-        isLoading: false,
-        error: error.message.toString(),
-      );
+      state = state.copyWith(isLoading: false, error: error.message.toString());
 
       _isFetching = false;
       return;
@@ -87,7 +83,7 @@ class AllProductsNotifier extends StateNotifier<AllProductsState> {
   }
 
   /// 🔥 Pull-to-refresh implementation
-  Future<void> refreshProducts() async {
+  Future<void> refreshProducts({required int currentTab}) async {
     if (_isFetching) return;
 
     _isFetching = true;
@@ -101,16 +97,21 @@ class AllProductsNotifier extends StateNotifier<AllProductsState> {
       hasReachedMax: false,
       products: [],
     );
-
-    final result = await usecase.getAllProducts(page: _page);
-
+    Result<List<ProductEntity>, Failure> result;
+    if (currentTab == 0) {
+      AppLogger.log("Tab 1 fetched");
+      result = await usecase.getAllProducts(page: _page);
+    } else if (currentTab == 1) {
+      AppLogger.log("Tab 2 fetched");
+      result = await usecase.getAllProducts(page: _page);
+    } else {
+      AppLogger.log("Tab 3 fetched");
+      result = await usecase.getAllProducts(page: _page);
+    }
     if (result is FailureResult) {
       final error = (result as FailureResult).error as Failure;
 
-      state = state.copyWith(
-        isLoading: false,
-        error: error.message.toString(),
-      );
+      state = state.copyWith(isLoading: false, error: error.message.toString());
 
       _isFetching = false;
       return;
