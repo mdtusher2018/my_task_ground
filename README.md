@@ -1,124 +1,243 @@
-# Flutter Product App
+# 📦 Flutter Task Submission
 
-A Flutter application demonstrating **Clean Architecture** principles with **BLoC** state management, focused on scalability, maintainability, and clear separation of concerns.
+A scalable Flutter application built using **Clean Architecture**, **Riverpod state management**, and a feature-based modular structure.
 
----
-
-## 📱 Features
-
-* Product listing
-* Category-wise product browsing
-* Keyword-based search (**implemented on Home page**)
-* Product details view
-* Clean UI based on provided Figma design
-* API integration
-* Scalable and maintainable architecture
+This project demonstrates proper separation of concerns, maintainable code structure, and production-ready architecture patterns.
 
 ---
 
-## 🧠 State Management
+# 🚀 Tech Stack
 
-* **BLoC (Business Logic Component)**
-* Event-driven architecture
-* Clear separation between UI and business logic
+* Flutter
+* Dart
+* Riverpod (State Management)
+* Clean Architecture
+* Repository Pattern
+* Dependency Injection
+* NestedScrollView + Slivers
+* Feature-based Folder Structure
 
 ---
 
-## 🏗 Architecture
+# 🏗 Architecture Overview
 
-The project follows **Clean Architecture** with a layered approach:
+The project follows **Clean Architecture** principles with three main layers:
 
 ```
-lib/
-├── src/
-│   ├── core/
-│   │   ├── base
-│   │   ├── di
-│   │   ├── router
-│   │   ├── services
-│   │   ├── themes
-│   │   └── utils
-│   │
-│   ├── data/
-│   │   ├── models
-│   │   └── repositories
-│   │
-│   ├── domain/
-│   │   ├── entities
-│   │   ├── repositories
-│   │   └── usecase
-│   │
-│   └── presentation/
-│       ├── shared
-│       └── views/
-│           ├── all_products
-│           ├── home
-│           ├── product_by_category
-│           └── product_details
+lib/src
 │
-└── main.dart
-```
-
-### Layer Responsibilities
-
-* **Presentation**: UI, BLoC, events, and states
-* **Domain**: Business logic, entities, and use cases
-* **Data**: API models and repository implementations
-* **Core**: Dependency injection, routing, themes, and utilities
-
----
-
-## 🔍 Search Functionality
-
-* Keyword-based and category-wise search is **fully implemented on the Home page**.
-* Other pages currently include **search UI only**, without functional logic.
-* The current BLoC structure allows easy extension of search functionality across the app.
-
----
-
-## 🔗 API Integration
-
-* API-driven data flow
-* Clean mapping between API models and domain entities
-* Loading and error states handled via BLoC
-
----
-
-## 🧪 Screenshots
-
-Screenshots of all implemented screens are included in the repository.
-
-Example structure:
-
-```
-assets/screenshots/
-├── home.png
-├── product_list.png
-├── product_details.png
+├── core
+├── data
+├── domain
+└── presentation
 ```
 
 ---
 
-## 🧩 Key Dependencies
+# 📁 Folder Structure Explanation
 
-* flutter_bloc
-* equatable
-* http / dio
-* freezed / json_serializable
-* photo_view
+## 🔹 1️⃣ Core Layer (`core/`)
+
+Contains shared utilities and app-level configurations.
+
+```
+core/
+├── base/          → Result, Failure, Base Repository
+├── di/            → Dependency Injection
+├── router/        → App routing
+├── services/      → Network, storage, snackbar
+├── themes/        → App colors & theme
+└── utils/         → Logger, API endpoints, global keys
+```
+
+### Purpose:
+
+* Reusable utilities
+* App-wide services
+* No business logic
 
 ---
 
-## 📌 Notes
+## 🔹 2️⃣ Data Layer (`data/`)
 
-* Code is written with readability and maintainability in mind
-* Follows Flutter best practices and BLoC conventions
-* Architecture is designed for easy feature expansion and testing
+Responsible for:
+
+* API models
+* Repository implementations
+
+```
+data/
+├── models/
+│   ├── all_products_response.dart
+│   ├── profile_response.dart
+│   └── signin_response.dart
+│
+└── repositories/
+    ├── auth_repository.dart
+    ├── product_repository.dart
+    └── profile_repository.dart
+```
+
+### Responsibilities:
+
+* Convert API JSON → Models
+* Implement repository interfaces
+* Communicate with network layer
 
 ---
 
-## 👤 Author
+## 🔹 3️⃣ Domain Layer (`domain/`)
 
-**Shairfin Alamin**
-Flutter Developer
-GitHub: [https://github.com/mdtusher2018](https://github.com/mdtusher2018)
+Contains business logic and abstractions.
+
+```
+domain/
+├── entities/
+│   ├── product_entity.dart
+│   ├── signin_entity.dart
+│   └── user_profile_entity.dart
+│
+├── repositories/
+│   ├── i_auth_repository.dart
+│   ├── i_product_repository.dart
+│   └── i_profile_repository.dart
+│
+└── usecase/
+    ├── product_usecase.dart
+    ├── profile_usecase.dart
+    └── signin_usecase.dart
+```
+
+### Responsibilities:
+
+* Pure business logic
+* No Flutter imports
+* No UI dependencies
+* No direct API calls
+
+This layer depends on nothing.
+
+---
+
+## 🔹 4️⃣ Presentation Layer (`presentation/`)
+
+Handles UI and state management.
+
+```
+presentation/
+├── shared/
+│   ├── components/
+│   │   ├── common_button.dart
+│   │   ├── common_image.dart
+│   │   └── common_text.dart
+│   │
+│   └── widgets/
+│       └── product_card.dart
+│
+└── Views/
+    ├── all_products/
+    │   ├── riverpod/products_provider.dart
+    │   └── all_products_page.dart
+    │
+    ├── authentication/
+    │   ├── riverpod/signin_provider.dart
+    │   └── signin_page.dart
+    │
+    ├── profile/
+    │   ├── riverpod/profile_provider.dart
+    │   └── profile_page.dart
+    │
+    └── root_page.dart
+```
+
+### Responsibilities:
+
+* UI screens
+* Riverpod providers
+* State handling
+* Reusable widgets
+
+---
+
+# 🧠 Architecture Flow
+
+```
+UI (Presentation)
+    ↓
+Riverpod Provider
+    ↓
+UseCase (Domain)
+    ↓
+Repository Interface (Domain)
+    ↓
+Repository Implementation (Data)
+    ↓
+Network / API
+```
+
+This ensures:
+
+* UI does not depend on API directly
+* Business logic is isolated
+* Easy testing
+* Easy scalability
+
+---
+
+# 🔥 Key Features Implemented
+
+* Clean Architecture Structure
+* Riverpod State Management
+* Infinite Scroll Pagination
+* Pull-to-Refresh
+* NestedScrollView with Slivers
+* Sticky TabBar
+* Feature-based folder structure
+* Repository Pattern
+* Separation of Domain & Data models
+* Reusable UI Components
+
+---
+
+# 🧩 UI Implementation Details
+
+The All Products page uses:
+
+* NestedScrollView
+* SliverAppBar
+* SliverGrid
+* SliverOverlapAbsorber
+* SliverOverlapInjector
+
+This enables:
+
+* Collapsible banner
+* Sticky TabBar
+* Smooth horizontal swipe
+* Infinite scroll behavior
+
+---
+
+# 🛠 How to Run
+
+```bash
+flutter pub get
+flutter run
+```
+
+---
+
+# 📈 Scalability
+
+This architecture allows:
+
+* Adding new features easily
+* Replacing API without affecting UI
+* Unit testing business logic independently
+* Scaling to large production apps
+
+---
+
+# 👨‍💻 Notes
+
+This task focuses on clean code practices, scalable architecture, and production-level Flutter development patterns.

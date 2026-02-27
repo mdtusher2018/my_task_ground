@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scube_task/src/core/router/routes.dart';
 import 'package:scube_task/src/domain/entites/signin_entity.dart';
-import 'package:scube_task/src/presentation/Views/authentication/notifiers/signin_provider.dart';
+import 'package:scube_task/src/presentation/Views/authentication/riverpod/signin_provider.dart';
 
 
 class SigninPage extends ConsumerWidget {

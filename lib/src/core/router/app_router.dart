@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scube_task/src/presentation/Views/all_products/all_products_page.dart';
-import 'package:scube_task/src/presentation/Views/authentication/pages/signin_page.dart';
+import 'package:scube_task/src/presentation/Views/authentication/signin_page.dart';
 import 'package:scube_task/src/presentation/Views/root_page.dart';
 import 'routes.dart';
 
