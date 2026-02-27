@@ -50,60 +50,52 @@ class _HomePageState extends ConsumerState<HomePage>
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        // Pull-to-refresh wrapper
-        body: RefreshIndicator(
-          onRefresh: () => ref
-              .read(allProductsProvider.notifier)
-              .refreshProducts(currentTab: _tabController.index),
-
-          // NestedScrollView allows SliverAppBars and TabBarViews to scroll together
-          child: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return [
-                // Top app bar
-                SliverAppBar(
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return [
+              // Top app bar
+              SliverAppBar(
+                pinned: true,
+                backgroundColor: AppColors.primary,
+                title: const Text("Scroll task"),
+                centerTitle: true,
+              ),
+        
+              // Banner section below the app bar
+              SliverAppBar(
+                backgroundColor: AppColors.primary,
+                toolbarHeight: 160,
+                flexibleSpace: const FlexibleSpaceBar(
+                  background: _BannerOnly(),
+                ),
+              ),
+        
+              // Tab bar pinned below the banner
+              SliverOverlapAbsorber(
+                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                  context,
+                ),
+                sliver: SliverAppBar(
                   pinned: true,
-                  backgroundColor: AppColors.primary,
-                  title: const Text("Scroll task"),
-                  centerTitle: true,
-                ),
-
-                // Banner section below the app bar
-                SliverAppBar(
-                  backgroundColor: AppColors.primary,
-                  toolbarHeight: 160,
-                  flexibleSpace: const FlexibleSpaceBar(
-                    background: _BannerOnly(),
+                  toolbarHeight: 0,
+                  bottom: TabBar(
+                    controller: _tabController,
+        
+                    tabs: const [
+                      Tab(text: "All"),
+                      Tab(text: "Electronics"),
+                      Tab(text: "Jewelery"),
+                    ],
                   ),
                 ),
-
-                // Tab bar pinned below the banner
-                SliverOverlapAbsorber(
-                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                    context,
-                  ),
-                  sliver: SliverAppBar(
-                    pinned: true,
-                    toolbarHeight: 0,
-                    bottom: TabBar(
-                      controller: _tabController,
-
-                      tabs: const [
-                        Tab(text: "All"),
-                        Tab(text: "Electronics"),
-                        Tab(text: "Jewelery"),
-                      ],
-                    ),
-                  ),
-                ),
-              ];
-            },
-
-            // The body contains tab views for each category
-            body: TabBarView(
-              controller: _tabController,
-              children: [ProductsTab(), ProductsTab(), ProductsTab()],
-            ),
+              ),
+            ];
+          },
+        
+          // The body contains tab views for each category
+          body: TabBarView(
+            controller: _tabController,
+            children: [ProductsTab(index: 0,), ProductsTab(index: 1,), ProductsTab(index: 2,)],
           ),
         ),
       ),
@@ -115,7 +107,8 @@ class _HomePageState extends ConsumerState<HomePage>
 ///
 /// Watches [allProductsProvider] for state changes.
 class ProductsTab extends ConsumerWidget {
-  const ProductsTab({super.key});
+   ProductsTab({super.key,required this.index});
+  final int index;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -123,40 +116,46 @@ class ProductsTab extends ConsumerWidget {
 
     return Builder(
       builder: (context) {
-        return CustomScrollView(
-          key: const PageStorageKey('products'), // Preserve scroll position
-          slivers: [
-            // Needed for NestedScrollView to properly handle overlaps
-            SliverOverlapInjector(
-              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-            ),
-
-            // Product grid
-            SliverPadding(
-              padding: const EdgeInsets.all(16),
-              sliver: SliverGrid(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.65,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 12,
-                ),
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) => ProductCard(state.products[index]),
-                  childCount: state.products.length,
+        // Pull-to-refresh wrapper
+        return RefreshIndicator(  onRefresh: () => ref
+              .read(allProductsProvider.notifier)
+              .refreshProducts(currentTab: index),
+          child: CustomScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
+            key: const PageStorageKey('products'), // Preserve scroll position
+            slivers: [
+              // Needed for NestedScrollView to properly handle overlaps
+              SliverOverlapInjector(
+                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              ),
+          
+              // Product grid
+              SliverPadding(
+                padding: const EdgeInsets.all(16),
+                sliver: SliverGrid(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 0.65,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => ProductCard(state.products[index]),
+                    childCount: state.products.length,
+                  ),
                 ),
               ),
-            ),
-
-            // Loading indicator at the bottom
-            if (state.isLoading)
-              const SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Center(child: CircularProgressIndicator()),
+          
+              // Loading indicator at the bottom
+              if (state.isLoading)
+                const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
                 ),
-              ),
-          ],
+            ],
+          ),
         );
       },
     );
