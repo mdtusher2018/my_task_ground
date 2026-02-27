@@ -1,4 +1,3 @@
-// lib/core/network/api_client.dart
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +6,16 @@ import 'package:scube_task/src/core/services/network/error/api_exception.dart';
 import 'package:scube_task/src/core/services/network/interceptor.dart/logger_interceptor.dart';
 import 'package:scube_task/src/core/services/storage/i_local_storage_service.dart';
 
+/// ==========================================================
+/// API CLIENT
+/// ==========================================================
+///
+/// Centralized HTTP client using Dio.
+/// Supports:
+/// - GET, POST, PUT, PATCH, DELETE requests
+/// - Multipart requests (file uploads)
+/// - Global response processing and error handling
+/// - Optional interceptors (logging, auth, retry, refresh token)
 class ApiClient {
   final Dio dio;
   final ILocalStorageService localStorage;
@@ -17,84 +26,40 @@ class ApiClient {
     required String baseUrl,
     required this.localStorage,
     required this.navigatorKey,
-  }) : dio =
-           dio ??
-           Dio(
-             BaseOptions(
-               baseUrl: baseUrl,
-
-               headers: {HttpHeaders.contentTypeHeader: 'application/json'},
-             ),
-           ) {
-    // add interceptors
+  }) : dio = dio ??
+            Dio(
+              BaseOptions(
+                baseUrl: baseUrl,
+                headers: {HttpHeaders.contentTypeHeader: 'application/json'},
+              ),
+            ) {
+    // Add interceptors
     this.dio.interceptors.addAll([
-      // AuthInterceptor(localStorage),
-      // RefreshTokenInterceptor(this.dio, localStorage, navigatorKey),
-      // RetryOnConnectionChangeInterceptor(dio: this.dio),
       LoggingInterceptor(),
     ]);
   }
 
-  Future<dynamic> get(Uri url, {Map<String, String>? headers}) async {
-    final res = await dio.get(
-      url.toString(),
-      options: Options(headers: headers),
-    );
-    return _processResponse(res);
-  }
+  /// ----------------------------
+  /// Standard HTTP Methods
+  /// ----------------------------
+  Future<dynamic> get(Uri url, {Map<String, String>? headers}) async =>
+      _processResponse(await dio.get(url.toString(), options: Options(headers: headers)));
 
-  Future<dynamic> post(
-    Uri url, {
-    Map<String, String>? headers,
-    dynamic body,
-  }) async {
-    final res = await dio.post(
-      url.toString(),
-      data: body,
-      options: Options(headers: headers),
-    );
-    return _processResponse(res);
-  }
+  Future<dynamic> post(Uri url, {Map<String, String>? headers, dynamic body}) async =>
+      _processResponse(await dio.post(url.toString(), data: body, options: Options(headers: headers)));
 
-  Future<dynamic> put(
-    Uri url, {
-    Map<String, String>? headers,
-    dynamic body,
-  }) async {
-    final res = await dio.put(
-      url.toString(),
-      data: body,
-      options: Options(headers: headers),
-    );
-    return _processResponse(res);
-  }
+  Future<dynamic> put(Uri url, {Map<String, String>? headers, dynamic body}) async =>
+      _processResponse(await dio.put(url.toString(), data: body, options: Options(headers: headers)));
 
-  Future<dynamic> patch(
-    Uri url, {
-    Map<String, String>? headers,
-    dynamic body,
-  }) async {
-    final res = await dio.patch(
-      url.toString(),
-      data: body,
-      options: Options(headers: headers),
-    );
-    return _processResponse(res);
-  }
+  Future<dynamic> patch(Uri url, {Map<String, String>? headers, dynamic body}) async =>
+      _processResponse(await dio.patch(url.toString(), data: body, options: Options(headers: headers)));
 
-  Future<dynamic> delete(
-    Uri url, {
-    Map<String, String>? headers,
-    dynamic body,
-  }) async {
-    final res = await dio.delete(
-      url.toString(),
-      data: body,
-      options: Options(headers: headers),
-    );
-    return _processResponse(res);
-  }
+  Future<dynamic> delete(Uri url, {Map<String, String>? headers, dynamic body}) async =>
+      _processResponse(await dio.delete(url.toString(), data: body, options: Options(headers: headers)));
 
+  /// ----------------------------
+  /// Multipart request for file uploads
+  /// ----------------------------
   Future<dynamic> sendMultipart(
     Uri url, {
     String method = 'POST',
@@ -104,6 +69,8 @@ class ApiClient {
     String bodyFieldName = 'data',
   }) async {
     final form = FormData();
+
+    // Add body fields
     if (body != null) {
       if (body is Map) {
         body.forEach((k, v) => form.fields.add(MapEntry(k, v.toString())));
@@ -111,19 +78,22 @@ class ApiClient {
         form.fields.add(MapEntry(bodyFieldName, body.toString()));
       }
     }
+
+    // Add files
     if (files != null) {
-      for (final e in files.entries) {
+      for (final entry in files.entries) {
         form.files.add(
           MapEntry(
-            e.key,
+            entry.key,
             await MultipartFile.fromFile(
-              e.value.path,
-              filename: e.value.path.split('/').last,
+              entry.value.path,
+              filename: entry.value.path.split('/').last,
             ),
           ),
         );
       }
     }
+
     final res = await dio.request(
       url.toString(),
       data: form,
@@ -132,24 +102,25 @@ class ApiClient {
     return _processResponse(res);
   }
 
+  /// ----------------------------
+  /// Global response processing
+  /// ----------------------------
   dynamic _processResponse(Response r) {
-    // global unauthorized handled in interceptors, but re-check
-    if (r.statusCode == 401) {
-      // optional fallback
-    }
-
     final statusCode = r.statusCode ?? 0;
     final data = r.data;
 
-    AppLogger.log(
-      'API RESPONSE: ${r.requestOptions.uri} -> $statusCode : $data',
-    );
+    // Optional: log response
+    AppLogger.log('API RESPONSE: ${r.requestOptions.uri} -> $statusCode : $data');
 
+    // Success responses
     if (statusCode >= 200 && statusCode < 300) return data;
 
+    // Extract error message
     final message = data is Map && data['message'] != null
         ? data['message'] as String
         : 'Unknown error';
+
+    // Throw custom API exception
     throw ApiException(statusCode, message, data: data);
   }
 }

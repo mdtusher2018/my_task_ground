@@ -1,5 +1,10 @@
 import 'package:scube_task/src/domain/entites/user_profile_entity.dart';
 
+/// ==========================================================
+/// PROFILE RESPONSE MODEL
+/// ==========================================================
+///
+/// Represents the user profile data returned from the API.
 class ProfileResponse {
   final int id;
   final String email;
@@ -87,6 +92,12 @@ class Geolocation {
     );
   }
 }
+
+/// ==========================================================
+/// PROFILE → ENTITY MAPPER
+/// ==========================================================
+///
+/// Converts [ProfileResponse] to [UserProfileEntity] for domain layer.
 extension ProfileResponseMapper on ProfileResponse {
   UserProfileEntity toEntity() {
     return UserProfileEntity(

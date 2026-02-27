@@ -4,6 +4,10 @@ import 'package:scube_task/src/core/themes/colors.dart';
 import 'package:scube_task/src/presentation/Views/all_products/riverpod/products_provider.dart';
 import 'package:scube_task/src/presentation/shared/widgets/product_card.dart';
 
+/// The main home page containing a banner, tab navigation, and product listings.
+///
+/// - Uses a [TabController] for switching between product categories.
+/// - Supports pull-to-refresh and infinite scrolling.
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
@@ -13,20 +17,25 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage>
     with TickerProviderStateMixin {
-  late TabController _tabController;
-  final ScrollController _scrollController = ScrollController();
+  late TabController _tabController; // Controller for tab navigation
+  final ScrollController _scrollController =
+      ScrollController(); // Controller for infinite scroll
 
   @override
   void initState() {
     super.initState();
+
+    // Initialize the tab controller with 3 tabs
     _tabController = TabController(length: 3, vsync: this);
-    _tabController.addListener(() {
-      if (_tabController.indexIsChanging) return;
-      //here i'll update 
-    });
-    // Lazy loading when scrolling near bottom
+
+    // Listen to tab changes
+    _tabController.addListener(() {});
+
+    // Listen to scroll events for infinite scroll
     _scrollController.addListener(() {
       final state = ref.read(allProductsProvider);
+
+      // Fetch more products when reaching near the bottom
       if (_scrollController.position.pixels >=
               _scrollController.position.maxScrollExtent - 200 &&
           !state.isLoading &&
@@ -41,13 +50,17 @@ class _HomePageState extends ConsumerState<HomePage>
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+        // Pull-to-refresh wrapper
         body: RefreshIndicator(
           onRefresh: () => ref
               .read(allProductsProvider.notifier)
               .refreshProducts(currentTab: _tabController.index),
+
+          // NestedScrollView allows SliverAppBars and TabBarViews to scroll together
           child: NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
+                // Top app bar
                 SliverAppBar(
                   pinned: true,
                   backgroundColor: AppColors.primary,
@@ -55,15 +68,16 @@ class _HomePageState extends ConsumerState<HomePage>
                   centerTitle: true,
                 ),
 
+                // Banner section below the app bar
                 SliverAppBar(
                   backgroundColor: AppColors.primary,
                   toolbarHeight: 160,
-            
                   flexibleSpace: const FlexibleSpaceBar(
                     background: _BannerOnly(),
                   ),
                 ),
 
+                // Tab bar pinned below the banner
                 SliverOverlapAbsorber(
                   handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
                     context,
@@ -71,11 +85,10 @@ class _HomePageState extends ConsumerState<HomePage>
                   sliver: SliverAppBar(
                     pinned: true,
                     toolbarHeight: 0,
-
                     bottom: TabBar(
                       controller: _tabController,
 
-                      tabs: [
+                      tabs: const [
                         Tab(text: "All"),
                         Tab(text: "Electronics"),
                         Tab(text: "Jewelery"),
@@ -85,7 +98,10 @@ class _HomePageState extends ConsumerState<HomePage>
                 ),
               ];
             },
-            body: const TabBarView(
+
+            // The body contains tab views for each category
+            body: TabBarView(
+              controller: _tabController,
               children: [ProductsTab(), ProductsTab(), ProductsTab()],
             ),
           ),
@@ -95,6 +111,9 @@ class _HomePageState extends ConsumerState<HomePage>
   }
 }
 
+/// Tab view displaying a grid of products.
+///
+/// Watches [allProductsProvider] for state changes.
 class ProductsTab extends ConsumerWidget {
   const ProductsTab({super.key});
 
@@ -105,12 +124,14 @@ class ProductsTab extends ConsumerWidget {
     return Builder(
       builder: (context) {
         return CustomScrollView(
-          key: PageStorageKey('products'),
+          key: const PageStorageKey('products'), // Preserve scroll position
           slivers: [
+            // Needed for NestedScrollView to properly handle overlaps
             SliverOverlapInjector(
               handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
             ),
 
+            // Product grid
             SliverPadding(
               padding: const EdgeInsets.all(16),
               sliver: SliverGrid(
@@ -127,6 +148,7 @@ class ProductsTab extends ConsumerWidget {
               ),
             ),
 
+            // Loading indicator at the bottom
             if (state.isLoading)
               const SliverToBoxAdapter(
                 child: Padding(
@@ -141,8 +163,12 @@ class ProductsTab extends ConsumerWidget {
   }
 }
 
+/// Banner widget displayed at the top of the home page.
+///
+/// Contains a title and subtitle promoting the products.
 class _BannerOnly extends StatelessWidget {
   const _BannerOnly();
+
   @override
   Widget build(BuildContext context) {
     return Container(

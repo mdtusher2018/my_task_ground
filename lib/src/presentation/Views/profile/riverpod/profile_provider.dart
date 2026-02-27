@@ -15,7 +15,7 @@ final profileUsecaseProvider = Provider<ProfileUsecase>((ref) {
 });
 
 /// ------------------------------------------------------------
-/// STATE DEFINITIONS (No Freezed)
+/// STATE DEFINITIONS 
 /// ------------------------------------------------------------
 enum ProfileStatus {
   initial,
@@ -67,7 +67,7 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
   Future<void> fetchProfile() async {
     state = state.copyWith(status: ProfileStatus.loading);
 
-    final result = await usecase.profileUseCase();
+    final result = await usecase.getProfile();
 
     if (result is Success<UserProfileEntity, Failure>) {
       state = state.copyWith(
@@ -89,7 +89,7 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
   Future<void> refetch() async {
     state = state.copyWith(status: ProfileStatus.refetching);
 
-    final result = await usecase.profileUseCase();
+    final result = await usecase.getProfile();
 
     if (result is Success<UserProfileEntity, Failure>) {
       state = state.copyWith(

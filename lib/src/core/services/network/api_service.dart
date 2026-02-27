@@ -1,18 +1,33 @@
-// lib/core/network/api_service.dart
 import 'dart:io';
 import 'package:scube_task/src/core/services/network/api_client.dart';
 import 'package:scube_task/src/core/services/network/i_api_service.dart';
 
+/// ==========================================================
+/// API SERVICE
+/// ==========================================================
+///
+/// Wrapper around [ApiClient] that provides convenient methods
+/// for interacting with REST APIs using endpoints.
+/// 
+/// Features:
+/// - GET, POST, PUT, PATCH, DELETE requests
+/// - Multipart requests (file uploads)
+/// - Optional full URL support
+/// - Automatically builds URLs using baseUrl
 final class ApiService implements IApiService {
   final ApiClient _client;
   final String _baseUrl;
 
   ApiService(this._client, {required String baseUrl}) : _baseUrl = baseUrl;
 
+  /// Build the final URL based on the base URL and endpoint
   String _buildUrl(String endpoint, bool fullUrl) {
     return fullUrl ? endpoint : '$_baseUrl$endpoint';
   }
 
+  /// ----------------------------
+  /// Standard HTTP Methods
+  /// ----------------------------
   @override
   Future<dynamic> get(
     String endpoint, {
@@ -67,6 +82,9 @@ final class ApiService implements IApiService {
     return _client.delete(Uri.parse(url), body: body, headers: headers);
   }
 
+  /// ----------------------------
+  /// Multipart requests (file uploads)
+  /// ----------------------------
   @override
   Future<dynamic> multipart(
     String endpoint, {

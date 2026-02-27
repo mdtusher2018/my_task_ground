@@ -1,5 +1,10 @@
 import 'package:scube_task/src/domain/entites/product_entity.dart';
 
+/// ==========================================================
+/// PRODUCT MODEL
+/// ==========================================================
+///
+/// Represents a product fetched from the API, including its rating.
 class Product {
   final int id;
   final String title;
@@ -49,6 +54,11 @@ class Rating {
   }
 }
 
+/// ==========================================================
+/// PRODUCT → ENTITY MAPPER
+/// ==========================================================
+///
+/// Converts [Product] model to [ProductEntity] for domain layer usage.
 extension ProductMapper on Product {
   ProductEntity toEntity() {
     return ProductEntity(
