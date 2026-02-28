@@ -275,14 +275,12 @@ After the workflow completes, you will find a downloadable APK file inside the w
 
 ---
 
----
 
 ## 🎥 Demo Video
 
 📺 Watch the full walkthrough here:  
 https://www.youtube.com/watch?v=LFqwuYu0dJg
 
----
 ---
 
 ## 📌 Notes
