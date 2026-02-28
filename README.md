@@ -218,15 +218,6 @@ This enables:
 
 ---
 
-# 🛠 How to Run
-
-```bash
-flutter pub get
-flutter run
-```
-
----
-
 # 📈 Scalability
 
 This architecture allows:
@@ -238,6 +229,61 @@ This architecture allows:
 
 ---
 
-# 👨‍💻 Notes
+# 📦 Setup & Submission Instructions
 
-This task focuses on clean code practices, scalable architecture, and production-level Flutter development patterns.
+## ✅ Environment Requirements
+
+* **Flutter:** 3.22+ (Stable Channel Recommended)
+* **Dart SDK:** 3.10.1 (as defined in pubspec.yaml)
+* **Android Studio / VS Code**
+* **Android Emulator or Physical Device**
+
+Verify installation:
+
+```bash
+flutter doctor
+```
+
+---
+
+## 🚀 Setup Steps
+
+```bash
+git clone <repository-url>
+cd my_task_ground
+flutter pub get
+flutter run
+```
+
+---
+
+
+## 📦 APK Download (CI/CD Enabled)
+
+You can clone the repository and push it to your own GitHub repository.
+
+Inside your repository, navigate to:
+
+```
+Actions → Workflows → Upload APK
+```
+
+The project includes a minimal CI/CD pipeline that automatically builds the release APK.
+
+After the workflow completes, you will find a downloadable APK file inside the workflow run artifacts.
+
+
+---
+
+## 📌 Notes
+
+* Clean Architecture (Presentation → Domain → Data)
+* Riverpod for state management
+* Repository Pattern implemented
+* Scalable & production-ready structure
+
+✨ Thank you for reviewing this submission.
+
+
+
+
