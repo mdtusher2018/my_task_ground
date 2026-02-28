@@ -93,6 +93,7 @@ class _HomePageState extends ConsumerState<HomePage>
           },
         
           // The body contains tab views for each category
+          //Tabbar belongs the horizontal swap
           body: TabBarView(
             controller: _tabController,
             children: [ProductsTab(index: 0,), ProductsTab(index: 1,), ProductsTab(index: 2,)],
@@ -120,6 +121,8 @@ class ProductsTab extends ConsumerWidget {
         return RefreshIndicator(  onRefresh: () => ref
               .read(allProductsProvider.notifier)
               .refreshProducts(currentTab: index),
+              //this belongs the vertical scroll
+              //in nestedscroll inner scroll owns the main scroll
           child: CustomScrollView(
             physics: AlwaysScrollableScrollPhysics(),
             key: const PageStorageKey('products'), // Preserve scroll position
