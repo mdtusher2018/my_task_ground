@@ -5,7 +5,7 @@ A scalable Flutter application built using **Clean Architecture**, **Riverpod st
 This project demonstrates proper separation of concerns, maintainable code structure, and production-ready architecture patterns.
 
 ---
-Projects Initially created from the git clone of my_learning_path(it workes as a templete)
+Projects Initially created from the git clone of my_flutter_learn (it workes as a templete)
 ---
 
 # 🚀 Tech Stack
